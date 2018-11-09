@@ -2,9 +2,9 @@
 
 	if(isset($_POST['action']) || isset($_POST['src'])) {
 
-		require_once("../../../../../wp-load.php");
-
 		if($_POST['action'] == 'get_all' && $_POST['src'] == 'services') {
+
+			require_once("../../../../../wp-load.php");
 			$services = new Services();
 			$services->get_all();
 		}

@@ -25,5 +25,6 @@
 	
 	//Get public codex
 	require_once 'public/public.php';
+	$public = new PublicEcw();
 
  ?>
