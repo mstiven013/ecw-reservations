@@ -5,14 +5,16 @@ jQuery(function($){
 
 });
 
-const modal = $('.modal-categories');
+//Form modal
+const modal = $('.modal-employees');
 const modalTitle = $('#modal-title');
 
+//Success modal
 const successModal = $('.modal-success');
 const successText = $('#success-text');
 const successBtn = $('#success-btn');
 
-var urlEmployees = info.ecw_url + "/inc/models/class.Categories.php";
+var urlEmployees = info.ecw_url + "/inc/models/class.Employees.php";
 
 const initDataTable = () => {
 	//Data table of users
@@ -41,36 +43,38 @@ const initDataTable = () => {
 		    }
 		};
 
-	var table = $('#categories').DataTable({
+	var table = $('#employees').DataTable({
 		"language": langDataTables,
 		"ajax": {
 			"method": "POST",
 			"url": urlEmployees,
 			"data": {
 				"action": "get_all",
-				"src": "categories"
+				"src": "employees"
 			}
 		},
 		"columns": [
 			{"data": "id"},
-			{"data": "title"},
-			{"data": "description"},
+			{"data": "name"},
+			{"data": "lastname"},
+			{"data": "email"},
+			{"data": "mobile"},
 			{"defaultContent": "<input type='button' class='button modificar' value='Modificar'>", "className": "actions"}
 		],
 		"dom": "Blfrtip",
 		"buttons": [
 			{
-				"text": 'Agregar categoría',
+				"text": 'Agregar empleado',
 				"className": "button",
 				"action": function ( e, dt, node, config ) {
-					modalAddCategory();
+					modalAddEmployee();
 				}
 			},
 			{
 				"extend": 'excel',
 				"text": 'Exportar a Excel',
 				"className": "button",
-				"filename": "Categorias - " + info.sitename,
+				"filename": "Empleados - " + info.sitename,
 				"exportOptions": {
 					"modifier": {
 						"order":  'current',
@@ -83,38 +87,53 @@ const initDataTable = () => {
 
 	});
 
-	modalCategoryUpdate('.datatable tbody', table);
+	modalServiceUpdate('.datatable tbody', table);
+
 }
 
-const modalCategoryUpdate = (tbody, table) => {
+const modalServiceUpdate = (tbody, table) => {
 
 	$(tbody).on('click', 'input.modificar', function() {
 
-		modalTitle.html('Modificar categoría:'); // Change modal title
+		modalTitle.html('Modificar empleado:'); // Change modal title
 
 		let data = table.row($(this).parents("tr")).data(); // Get row data
+		console.log(data)
 
 		//Change form values
-		let action = $('#categories-form #action').val('update');
-		let id = $('#categories-form #id').val(data.id);
-		let title = $('#categories-form #title').val(data.title);
-		let description = $('#categories-form #description').val(data.description);
-		let button = $('#categories-form #send').val('Modificar categoría');
+		let action = $('#employees-form #action').val('update');
+		let id = $('#employees-form #id').val(data.id);
+		let name = $('#employees-form #name').val(data.name);
+		let lastname = $('#employees-form #lastname').val(data.lastname);
+		let phone = $('#employees-form #phone').val(data.phone);
+		let mobile = $('#employees-form #mobile').val(data.mobile);
+		let email = $('#employees-form #email').val(data.email);
+		let address = $('#employees-form #address').val(data.address);
+		let office = $('#employees-form #office').val(data.office);
+
+		let button = $('#employees-form #send').val('Modificar empleado');
 
 		modal.modal('show');
 
 	});
 }
 
-const modalAddCategory = () => {
+const modalAddEmployee = () => {
 
-	modalTitle.html('Agregar categoría:'); // Change modal title
+	modalTitle.html('Agregar empleado:'); // Change modal title
 
 	//Change form values
-	let action = $('#categories-form #action').val('create');
-	let title = $('#categories-form #title').val('');
-	let description = $('#categories-form #description').val('');
-	let button = $('#categories-form #send').val('Agregar categoría');
+	let action = $('#employees-form #action').val('create');
+	let id = $('#employees-form #id').val('');
+	let name = $('#employees-form #name').val('');
+	let lastname = $('#employees-form #lastname').val('');
+	let phone = $('#employees-form #phone').val('');
+	let mobile = $('#employees-form #mobile').val('');
+	let email = $('#employees-form #email').val('');
+	let address = $('#employees-form #address').val('');
+	let office = $('#employees-form #office').val('');
+
+	let button = $('#employees-form #send').val('Agregar empleado');
 
 	modal.modal('show');
 
@@ -122,7 +141,7 @@ const modalAddCategory = () => {
 
 const formFunctions = () => {
 
-	const frm = $('#categories-form');
+	const frm = $('#employees-form');
 	const reqs = $('form .required');
 
 	frm.on('submit', function(e) {
@@ -149,7 +168,7 @@ const formFunctions = () => {
 
 			let send = frm.serialize();
 
-			//console.log(send);
+			console.log(send);
 
 			$.ajax({
 				method: "POST",
@@ -185,7 +204,11 @@ const formFunctions = () => {
 
 }
 
+
+
 const getResponse = (data) => {
+
+	console.log(data)
 
 	let word = '';
 
@@ -209,7 +232,7 @@ const getResponse = (data) => {
 		case 200:
 
 			successBtn.html('Cerrar');
-			successText.html(`La categoría se ha ${word} correctamente`);
+			successText.html(`El empleado se ha ${word} correctamente`);
 
 			break;
 
@@ -223,14 +246,14 @@ const getResponse = (data) => {
 		case 409:
 
 			successBtn.html('Cerrar');
-			successText.html('Ya existe un categoría con este nombre.');
+			successText.html('Ya existe un empleado con estos datos.');
 
 			break;
 
 		default:
 
 			successBtn.html('Cerrar');
-			successText.html(`La categoría se ha ${word} correctamente`);
+			successText.html(`El empleado se ha ${word} correctamente`);
 
 			break;
 	}

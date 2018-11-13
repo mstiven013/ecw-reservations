@@ -1,5 +1,28 @@
 jQuery(function($){
 
+	$('.single-list').select2();
+	$('.multiple-list').select2({
+		placeholder: 'Elija al menos servicio'
+	});
+
+	//Run functions
+	Datepicker();
+	Timepicker();
+	initDataTable();
+	formFunctions();
+
+});
+
+const modal = $('.modal-reservations');
+const modalTitle = $('#modal-title');
+
+const successModal = $('.modal-success');
+const successText = $('#success-text');
+const successBtn = $('#success-btn');
+
+var urlReservations = info.ecw_url + "/inc/models/class.Reservations.php";
+
+const initDataTable = () => {
 	//Data table of users
 	var langDataTables = {
 		    "sProcessing":     "Procesando...",
@@ -26,13 +49,11 @@ jQuery(function($){
 		    }
 		};
 
-	var urlClass = info.ecw_url + "/inc/models/class.Reservations.php";
-
 	var table = $('#reservations').DataTable({
 		"language": langDataTables,
 		"ajax": {
 			"method": "POST",
-			"url": urlClass,
+			"url": urlReservations,
 			"data": {
 				"action": "get_all",
 				"src": "reservations"
@@ -42,18 +63,25 @@ jQuery(function($){
 			{"data": "person_name"},
 			{"data": "person_email"},
 			{"data": "reservation_date"},
-			{"data": "reservation_time"},
+			{"data": "reservation_hour"},
 			{"data": "category_id"},
 			{"data": "service_id"},
-			{"data": "employee_id"}
+			{"defaultContent": "<input type='button' class='button modificar' value='Modificar'>", "className": "actions"}
 		],
 		"dom": "Blfrtip",
 		"buttons": [
 			{
+				"text": 'Crear una reserva',
+				"className": "button",
+				"action": function ( e, dt, node, config ) {
+					modalAddReservation();
+				}
+			},
+			{
 				"extend": 'excel',
 				"text": 'Exportar a Excel',
 				"className": "button",
-				"filename": "reservas",
+				"filename": "Reservas - " + info.sitename,
 				"exportOptions": {
 					"modifier": {
 						"order":  'current',
@@ -66,4 +94,207 @@ jQuery(function($){
 
 	});
 
-});
+	modalReservationUpdate('.datatable tbody', table);
+}
+
+//Datepicker init function
+const Datepicker = () => {
+
+	const dp = $('#reservation_date');
+	
+	dp.datepicker({
+		language: "es",
+		clearBtn: true,
+		autoclose: true,
+		format: 'yyyy-mm-dd',
+		changeMonth: true,
+        changeYear: true
+	});
+
+}
+
+//Timpicker init function
+const Timepicker = () => {
+
+	const cp = $('#reservation_hour');
+
+	cp.clockpicker({
+		align: 'left',
+		default: 'now',
+		donetext: 'Seleccionar',
+		twelvehour: true
+	});
+
+}
+
+const modalReservationUpdate = (tbody, table) => {
+
+	$(tbody).on('click', 'input.modificar', function() {
+
+		modalTitle.html('Modificar servicio:'); // Change modal title
+
+		let data = table.row($(this).parents("tr")).data(); // Get row data
+
+		console.log(data)
+
+		//Change form values
+		let id = $('#reservations-form #id').val(data.id);
+		let action = $('#reservations-form #action').val('update');
+		let reservation_date = $('#reservations-form #reservation_date').val(data.reservation_date);
+		let reservation_hour = $('#reservations-form #reservation_hour').val(data.reservation_hour);
+		let category_id = $('#reservations-form #category_id').val(data.category_id);
+		let service_id = $('#reservations-form #service_id').val(data.service_id);
+		let employee_id = $('#reservations-form #employee_id').val(data.employee_id);
+		let person_name = $('#reservations-form #person_name').val(data.person_name);
+		let person_phone = $('#reservations-form #person_phone').val(data.person_phone);
+		let person_email = $('#reservations-form #person_email').val(data.person_email);
+		let aditional_notes = $('#reservations-form #aditional_notes').val(data.aditional_notes);
+
+		modal.modal('show');
+
+	});
+}
+
+const modalAddReservation = () => {
+
+	modalTitle.html('Crear reserva:'); // Change modal title
+
+	//Change form values
+	let action = $('#reservations-form #action').val('create');
+	let reservation_date = $('#reservations-form #reservation_date').val('');
+	let reservation_hour = $('#reservations-form #reservation_hour').val('');
+	let category_id = $('#reservations-form #category_id').val(0);
+	let service_id = $('#reservations-form #service_id').val(0);
+	let employee_id = $('#reservations-form #employee_id').val(0);
+	let person_name = $('#reservations-form #person_name').val('');
+	let person_phone = $('#reservations-form #person_phone').val('');
+	let person_email = $('#reservations-form #person_email').val('');
+	let aditional_notes = $('#reservations-form #aditional_notes').val('');
+	let button = $('#reservations-form #send').val('Crear reserva');
+
+	modal.modal('show');
+
+}
+
+const formFunctions = () => {
+	//Prevent writte on date & hour inputs
+	$('input#reservation_date, input#reservation_hour').keypress(function(){
+		return false;
+	});
+
+	const frm = $('#reservations-form');
+	const reqs = $('form .required');
+
+	frm.on('submit', function(e) {
+		e.preventDefault();
+
+		let flag = true;
+
+		reqs.each(function() {
+			let v = $(this).val();
+
+			if(v == '' || v == ' ' || v === undefined || v === null || v == '0') {
+
+				let errId = '#' + $(this).attr('id') + '-error';
+
+				$(errId).css('display', 'block');
+				$(errId).html('Este campo es obligatorio.');
+
+				flag = false;
+
+			}
+		});
+
+		if(flag) {
+
+			let send = frm.serialize();
+
+			console.log(send);
+
+			$.ajax({
+				method: "POST",
+				url: urlReservations,
+				data: send
+			}).done(function(info){
+				var json_info = JSON.parse( info );
+
+				modal.modal('hide');
+				$('.datatable').DataTable().ajax.reload();
+				
+				getResponse(json_info);
+			});
+
+		}
+	});
+
+	reqs.on('change keyup', function() {
+		let v = $(this).val();
+
+		if(v != '' && v != ' ' && v !== undefined && v !== null && v != '0') {
+
+			let errId = '#' + $(this).attr('id') + '-error';
+			$(errId).css('display', 'none');
+			$(errId).html('');
+
+		}
+	});
+
+	$('.close-modal').on('click', function() {
+		$('.modal').modal('hide');
+	});
+}
+
+const getResponse = (data) => {
+
+	let word = '';
+	console.log(data)
+
+	//Get data action
+	switch(data.action) {
+		case 'create':
+			word = 'creado';
+			break;
+
+		case 'update':
+			word = 'actualizado';
+			break;
+
+		default:
+			word = 'creado';
+			break;
+	}
+
+	//Get data code response
+	switch (data.code) {
+		case 200:
+
+			successBtn.html('Cerrar');
+			successText.html(`La reserva se ha ${word} correctamente`);
+
+			break;
+
+		case 500:
+
+			successBtn.html('Cerrar');
+			successText.html(`Ha ocurrido un error, por favor intentarlo de nuevo.`);
+
+			break;
+
+		case 409:
+
+			successBtn.html('Cerrar');
+			successText.html('Ya existe un reserva con este nombre.');
+
+			break;
+
+		default:
+
+			successBtn.html('Cerrar');
+			successText.html(`Ha ocurrido un error, por favor intentarlo de nuevo.`);
+
+			break;
+	}
+
+	successModal.modal('show');
+
+}

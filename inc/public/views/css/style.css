@@ -1,3 +1,40 @@
 select {
 	width: 100%;
 }
+
+/*Datepicker styles*/
+.datepicker.dropdown-menu {
+	max-width: 300px;
+	min-width: 300px !important;
+}
+
+/*Select2 styles*/
+form.reservation .select2-container {
+	outline: 0;
+	width: 100% !important;
+}
+	form.reservation .select2-container .select2-selection {
+		border-radius: 3px;
+		border: 1px solid #bbb;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+		-ms-box-shadow: none;
+		box-shadow: none;
+		height: 38px;
+		outline: 0;
+	}
+		form.reservation .select2-container .select2-selection .select2-selection__rendered {
+			line-height: 38px;
+		}
+		form.reservation .select2-container .select2-selection .select2-selection__arrow {
+			height: 36px;
+		}
+
+/*Form styles*/
+form.reservation #second-step {
+	display: none;
+}
+
+form.reservation #date, form.reservation #hour {
+	cursor: pointer;
+}

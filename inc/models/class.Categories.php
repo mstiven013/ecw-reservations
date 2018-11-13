@@ -4,9 +4,46 @@
 
 		require_once("../../../../../wp-load.php");
 
-		if($_POST['action'] == 'get_all' && $_POST['src'] == 'categories') {
-			$categories = new Categories();
-			$categories->get_all();
+		if($_POST['src'] == 'categories') {
+
+			switch ($_POST['action']) {
+				case 'get_all':
+					$requestMethod = (isset($_POST['method'])) ? $_POST['method'] : 'json';
+
+					$categories = new Categories();
+					$categories->get_all($requestMethod);
+					break;
+				
+				case 'create':
+
+					$title = $_POST['title'];
+					$description = $_POST['description'];
+					$image = (isset($_POST['image'])) ? $_POST['image'] : "no_image";
+
+					$categories = new Categories();
+					$categories->create($title, $description, $image);
+					break;
+
+				case 'update':
+
+					$id = $_POST['id'];
+					$title = $_POST['title'];
+					$description = $_POST['description'];
+					$image = (isset($_POST['image'])) ? $_POST['image'] : "no_image";
+
+					$categories = new Categories();
+					$categories->update($id, $title, $description, $image);
+					break;
+
+				
+				default:
+					$requestMethod = (isset($_POST['method'])) ? $_POST['method'] : 'json';
+
+					$categories = new Categories();
+					$categories->get_all($requestMethod);
+					break;
+			}
+			
 		}
 
 	}
@@ -16,7 +53,6 @@
 		protected $table_name = 'ecw_categories';
 
 		public function __construct() {
-			add_action('init', array($this, 'create_table'));
 		}
 
 		public function create_table() {
@@ -36,7 +72,7 @@
 
 		}
 
-		public function get_all() {
+		public function get_all($method) {
 
 			global $wpdb;
 
@@ -48,7 +84,74 @@
 			
 			$data = array('data' => $query);
 
-			echo json_encode($data);
+			switch ($method) {
+				case 'json':
+						echo json_encode($data);
+					break;
+
+				case 'array':
+						return $query;
+					break;
+				
+				default:
+						echo json_encode($data);
+					break;
+			}
+
+		}
+
+		public function create($title, $description, $image) {
+
+			global $wpdb;
+
+			$tname = $wpdb->prefix . $this->table_name; // Table name
+
+			$sql = "INSERT INTO $tname (title, description, image) VALUES ('$title', '$description', '$image')";
+
+			$query = $wpdb->query($sql);
+
+			$resp['action'] = 'create';
+
+			if($query) {
+				$resp['code'] = 200;
+				$resp['msg'] = 'Resource saved successfully.';
+			} else {
+				
+				if( $wpdb->insert_id == 0 ) {
+					$resp['code'] = 409;
+					$resp['msg'] = 'This source already exists.';
+				} else {
+					$resp['code'] = 500;
+					$resp['msg'] = 'Error saving this resource.';
+				}
+
+			}
+
+			echo json_encode($resp);
+
+		}
+
+		public function update($id, $title, $description, $image) {
+
+			global $wpdb;
+
+			$tname = $wpdb->prefix . $this->table_name; // Table name
+
+			$sql = "UPDATE $tname SET title = '$title', description = '$description', image = '$image' WHERE id = '$id'";
+
+			$query = $wpdb->query($sql);
+
+			$resp['action'] = 'update';
+
+			if($query) {
+				$resp['code'] = 200;
+				$resp['msg'] = 'Resource updated successfully.';
+			} else {
+				$resp['code'] = 409;
+				$resp['msg'] = 'This source already exists.';
+			}
+
+			echo json_encode($resp);
 
 		}
 

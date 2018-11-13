@@ -3,7 +3,6 @@
 	class Emails {
 
 		public function __construct() {
-			add_action('init', array($this, 'create_table'));
 		}
 
 		public function create_table() {

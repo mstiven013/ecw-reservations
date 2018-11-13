@@ -34,6 +34,16 @@
 				'ecwr_services'
 			);
 
+			//Add services submenu to reservations menu
+			add_submenu_page(
+				'ecwr_all_reservations',
+				__('Empleados', ECWR_NS),
+				__('Empleados', ECWR_NS),
+				'administrator',
+				'ecwr_employees',
+				'ecwr_employees'
+			);
+
 			//Add categories submenu to reservations menu
 			add_submenu_page(
 				'ecwr_all_reservations',
@@ -68,6 +78,12 @@
 	if(!function_exists('ecwr_categories')) {
 		function ecwr_categories() {
 			require_once('views/categories.php');
+		}
+	}
+
+	if(!function_exists('ecwr_employees')) {
+		function ecwr_employees() {
+			require_once('views/employees.php');
 		}
 	}
 
