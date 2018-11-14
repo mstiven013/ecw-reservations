@@ -60,13 +60,14 @@ const initDataTable = () => {
 			}
 		},
 		"columns": [
+			{"data": "id"},
 			{"data": "person_name"},
 			{"data": "person_email"},
 			{"data": "reservation_date"},
 			{"data": "reservation_hour"},
-			{"data": "category_id"},
-			{"data": "service_id"},
-			{"defaultContent": "<input type='button' class='button modificar' value='Modificar'>", "className": "actions"}
+			{"data": "category_title"},
+			{"data": "service_title"},
+			{"defaultContent": "<input type='button' class='button modificar' value='Modificar'> <input type='button' class='button delete' value='Borrar'>", "className": "actions"}
 		],
 		"dom": "Blfrtip",
 		"buttons": [
@@ -95,6 +96,7 @@ const initDataTable = () => {
 	});
 
 	modalReservationUpdate('.datatable tbody', table);
+	deleteReservation('.datatable tbody', table);
 }
 
 //Datepicker init function
@@ -131,7 +133,7 @@ const modalReservationUpdate = (tbody, table) => {
 
 	$(tbody).on('click', 'input.modificar', function() {
 
-		modalTitle.html('Modificar servicio:'); // Change modal title
+		modalTitle.html('Modificar reserva:'); // Change modal title
 
 		let data = table.row($(this).parents("tr")).data(); // Get row data
 
@@ -142,13 +144,15 @@ const modalReservationUpdate = (tbody, table) => {
 		let action = $('#reservations-form #action').val('update');
 		let reservation_date = $('#reservations-form #reservation_date').val(data.reservation_date);
 		let reservation_hour = $('#reservations-form #reservation_hour').val(data.reservation_hour);
-		let category_id = $('#reservations-form #category_id').val(data.category_id);
-		let service_id = $('#reservations-form #service_id').val(data.service_id);
-		let employee_id = $('#reservations-form #employee_id').val(data.employee_id);
+		let category_id = $('#reservations-form #category_id').val(data.category_id).trigger('change');
+		let service_id = $('#reservations-form #service_id').val(data.service_id).trigger('change');
+		let employee_id = $('#reservations-form #employee_id').val(data.employee_id).trigger('change');
 		let person_name = $('#reservations-form #person_name').val(data.person_name);
 		let person_phone = $('#reservations-form #person_phone').val(data.person_phone);
 		let person_email = $('#reservations-form #person_email').val(data.person_email);
 		let aditional_notes = $('#reservations-form #aditional_notes').val(data.aditional_notes);
+
+		let button = $('#reservations-form #send').val('Modificar reserva');
 
 		modal.modal('show');
 
@@ -163,9 +167,9 @@ const modalAddReservation = () => {
 	let action = $('#reservations-form #action').val('create');
 	let reservation_date = $('#reservations-form #reservation_date').val('');
 	let reservation_hour = $('#reservations-form #reservation_hour').val('');
-	let category_id = $('#reservations-form #category_id').val(0);
-	let service_id = $('#reservations-form #service_id').val(0);
-	let employee_id = $('#reservations-form #employee_id').val(0);
+	let category_id = $('#reservations-form #category_id').val(0).trigger('change');
+	let service_id = $('#reservations-form #service_id').val(0).trigger('change');
+	let employee_id = $('#reservations-form #employee_id').val(0).trigger('change');
 	let person_name = $('#reservations-form #person_name').val('');
 	let person_phone = $('#reservations-form #person_phone').val('');
 	let person_email = $('#reservations-form #person_email').val('');
@@ -173,6 +177,30 @@ const modalAddReservation = () => {
 	let button = $('#reservations-form #send').val('Crear reserva');
 
 	modal.modal('show');
+
+}
+
+const deleteReservation = (tbody, table) => {
+
+	$(tbody).on('click', 'input.delete', function() {
+		let data = table.row($(this).parents("tr")).data(); // Get row data
+
+		console.log(JSON.stringify(send))
+
+		$.ajax({
+			method: "POST",
+			url: urlReservations,
+			data: {
+				"src": "reservations",
+				"action": "delete",
+				"id": data.id
+			},
+		}).done(function(info){
+			let json_info = JSON.parse( info );
+			console.log(json_info)
+			$('.datatable').DataTable().ajax.reload();
+		});
+	});
 
 }
 
@@ -209,13 +237,12 @@ const formFunctions = () => {
 
 			let send = frm.serialize();
 
-			console.log(send);
-
 			$.ajax({
 				method: "POST",
 				url: urlReservations,
 				data: send
 			}).done(function(info){
+				console.log(info)
 				var json_info = JSON.parse( info );
 
 				modal.modal('hide');

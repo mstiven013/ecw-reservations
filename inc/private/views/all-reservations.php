@@ -12,6 +12,7 @@
 	<table id="reservations" class="datatable">
 		<thead>
 			<tr>
+				<th>ID:</th>
 				<th>Nombre:</th>
 				<th>Correo electrónico:</th>
 				<th>Fecha:</th>
@@ -24,6 +25,7 @@
 
 		<tfoot>
 			<tr>
+				<th>ID:</th>
 				<th>Nombre:</th>
 				<th>Correo electrónico:</th>
 				<th>Fecha:</th>
@@ -53,13 +55,13 @@
 			    		<div class="row">
 							<div class="col-12 col-md-6 col-lg-6 form-group">
 								<label for="reservation_date"><span class="req">*</span> Fecha de la reserva:</label>
-								<input type="text" class="form-control required" id="reservation_date" name="reservation_date" placeholder="Seleccione la fecha...">
+								<input type="text" class="form-control required" autocomplete="off" id="reservation_date" name="reservation_date" placeholder="Seleccione la fecha...">
 								<p id="reservation_date-error" class="error"></p>
 							</div>
 
 							<div class="col-12 col-md-6 col-lg-6 form-group">
 								<label for="reservation_hour"><span class="req">*</span> Hora de la reserva:</label>
-								<input type="text" class="form-control required" id="reservation_hour" name="reservation_hour" placeholder="Seleccione la hora...">
+								<input type="text" class="form-control required" autocomplete="off" id="reservation_hour" name="reservation_hour" placeholder="Seleccione la hora...">
 								<p id="reservation_hour-error" class="error"></p>
 							</div>
 
@@ -111,7 +113,7 @@
 									<?php if(count($all_employees) > 0) { ?>
 										<option value="0">Seleccionar un empleado...</option>
 										<?php foreach ($all_employees as $employee) { ?>
-											<option value="<?php echo $employee->id; ?>"><?php echo $employee->name; ?></option>
+											<option value="<?php echo $employee->id; ?>"><?php echo $employee->name . ' ' .$employee->lastname; ?></option>
 										<?php } ?>
 									<?php } else { ?>
 										<option value="0">No hay empleados disponibles...</option>

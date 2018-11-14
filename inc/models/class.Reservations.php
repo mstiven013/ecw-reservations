@@ -52,7 +52,15 @@
 					$aditional_notes = (isset($_POST['aditional_notes'])) ? $_POST['aditional_notes'] : null;
 
 					$reservations = new Reservations();
-					$reservations->create($id, $reservation_date, $reservation_hour, $person_name, $person_phone, $person_email, $aditional_notes, $category_id, $service_id, $employee_id);
+					$reservations->update($id, $reservation_date, $reservation_hour, $person_name, $person_phone, $person_email, $aditional_notes, $category_id, $service_id, $employee_id);
+
+					break;
+
+				case 'delete':
+
+					$id = $_POST['id'];
+					$reservations = new Reservations();
+					$reservations->delete($id);
 
 					break;
 				
@@ -103,8 +111,15 @@
 			global $wpdb;
 
 			$tname = $wpdb->prefix . $this->table_name; // Table name
+			$tcategory = $wpdb->prefix . 'ecw_categories';
+			$tservice = $wpdb->prefix . 'ecw_services';
+			$temployee = $wpdb->prefix . 'ecw_employees';
 
-			$sql = "SELECT * FROM $tname";
+			$sql = "SELECT $tname.*, $tservice.title AS service_title, $tcategory.title AS category_title, $temployee.name AS employee_name, $temployee.lastname AS employee_lastname FROM $tname 
+					INNER JOIN $tcategory ON $tname.category_id = $tcategory.id
+					INNER JOIN $tservice ON $tname.service_id = $tservice.id
+					INNER JOIN $temployee ON $tname.employee_id = $temployee.id
+					";
 
 			$query = $wpdb->get_results($sql);
 			
@@ -140,8 +155,22 @@
 			$resp['action'] = 'create';
 
 			if($query) {
-				$resp['code'] = 200;
-				$resp['msg'] = 'Resource saved successfully.';
+
+				require_once 'class.Emails.php';
+				$email = new Emails();
+
+
+				if($email->reservation($wpdb->insert_id)) {
+					$resp['code'] = 200;
+					$resp['msg'] = 'Resource saved successfully.';
+					$resp['reservation'] = $email->reservation($wpdb->insert_id);
+				} else {
+					$resp['error2'] = $email->reservation($wpdb->insert_id);
+					$resp['error'] = $wpdb->last_error;
+					$resp['code'] = 500;
+					$resp['msg'] = 'Error saving this resource.';
+				}
+
 			} else {
 				
 				if( $wpdb->insert_id == 0 ) {
@@ -180,6 +209,36 @@
 			}
 
 			echo json_encode($resp);
+
+		}
+
+		public function delete($id) {
+
+			global $wpdb;
+
+			$tname = $wpdb->prefix . $this->table_name; // Table name
+
+			$sql = "DELETE FROM $tname WHERE id = '$id'";
+
+			$query = $wpdb->query($sql);
+
+			$resp['action'] = 'delete';
+			$resp['id'] = $id;
+
+			if($query) {
+				$resp['code'] = 200;
+				$resp['msg'] = 'Resource updated successfully.';
+			} else {
+				$resp['error'] = $wpdb->last_error;
+				$resp['code'] = 200;
+				$resp['msg'] = 'An error has ocurred in server.';
+			}
+
+			echo json_encode($resp);
+
+		}
+
+		public function sendEmailCreate($reservation_id) {
 
 		}
 
