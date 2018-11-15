@@ -24,6 +24,8 @@
 				'ecwr_global_settings'
 			);
 
+			add_action( 'admin_init', 'register_ecwr_global_settings' );
+
 			//Add services submenu to reservations menu
 			add_submenu_page(
 				'ecwr_all_reservations',
@@ -59,7 +61,7 @@
 
 	if(!function_exists('ecwr_all_reservations')) {
 		function ecwr_all_reservations() {
-			require_once('views/all-reservations.php');
+			include('views/all-reservations.php');
 		}
 	}
 
@@ -84,6 +86,23 @@
 	if(!function_exists('ecwr_employees')) {
 		function ecwr_employees() {
 			require_once('views/employees.php');
+		}
+	}
+
+	if(!function_exists('register_ecwr_global_settings')) {
+		function register_ecwr_global_settings() {
+
+			//Register email options
+			register_setting( 'ecwr-settings-group', 'ecwr_mail_email' );
+			register_setting( 'ecwr-settings-group', 'ecwr_mail_name' );
+			register_setting( 'ecwr-settings-group', 'ecwr_smtp_host' );
+			register_setting( 'ecwr-settings-group', 'ecwr_smtp_user' );
+			register_setting( 'ecwr-settings-group', 'ecwr_smtp_password' );
+
+			//Register general options
+			register_setting( 'ecwr-settings-group', 'ecwr_min_datepicker' );
+			register_setting( 'ecwr-settings-group', 'ecwr_max_datepicker' );
+
 		}
 	}
 

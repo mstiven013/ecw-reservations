@@ -2,7 +2,7 @@
 
 	if(isset($_POST['action']) && isset($_POST['src'])) {
 
-		require_once("../../../../../wp-load.php");
+		include(dirname(__FILE__, 6) . '/wp-load.php'); //Require wp load
 
 		if($_POST['src'] == 'services'){
 			switch ($_POST['action']) {

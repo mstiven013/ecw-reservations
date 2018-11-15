@@ -1,9 +1,4 @@
-<?php 
-	
-	//Require global function of plugin
-	require_once dirname(__FILE__, 3) . '/functions.php';
-
- ?>
+<?php include(dirname(__FILE__, 3) . '/functions.php'); ?>
 
 <div class="wrap ecw_reservations">
 
@@ -70,9 +65,9 @@
 								<label for="category_id"><span class="req">*</span> Categoría:</label>
 								<select class="single-list required" name="category_id" id="category_id">
 									
-									<?php if(count($all_categories) > 0) { ?>
+									<?php if(count(all_categories()) > 0) { ?>
 										<option value="0">Seleccionar una categoría...</option>
-										<?php foreach ($all_categories as $category) { ?>
+										<?php foreach (all_categories() as $category) { ?>
 											<option value="<?php echo $category->id; ?>"><?php echo $category->title; ?></option>
 										<?php } ?>
 									<?php } else { ?>
@@ -89,9 +84,9 @@
 								<label for="service_id"><span class="req">*</span> Servicio:</label>
 								<select class="single-list required" name="service_id" id="service_id">
 
-									<?php if(count($all_services) > 0) { ?>
+									<?php if(count(all_services()) > 0) { ?>
 										<option value="0">Seleccionar un servicio...</option>
-										<?php foreach ($all_services as $service) { ?>
+										<?php foreach (all_services() as $service) { ?>
 											<option value="<?php echo $service->id; ?>"><?php echo $service->title; ?></option>
 										<?php } ?>
 									<?php } else { ?>
@@ -110,9 +105,9 @@
 								<label for="employee_id"><span class="req">*</span> Empleado:</label>
 								<select class="single-list required" name="employee_id" id="employee_id">
 
-									<?php if(count($all_employees) > 0) { ?>
+									<?php if(count(all_employees()) > 0) { ?>
 										<option value="0">Seleccionar un empleado...</option>
-										<?php foreach ($all_employees as $employee) { ?>
+										<?php foreach (all_employees() as $employee) { ?>
 											<option value="<?php echo $employee->id; ?>"><?php echo $employee->name . ' ' .$employee->lastname; ?></option>
 										<?php } ?>
 									<?php } else { ?>

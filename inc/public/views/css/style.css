@@ -31,10 +31,102 @@ form.reservation .select2-container {
 		}
 
 /*Form styles*/
+form.reservation .req {
+	color: red;
+}
+
+form.reservation .error {
+	color: red;
+	display: none;
+	margin-bottom: 0px;
+}
+
 form.reservation #second-step {
 	display: none;
 }
 
-form.reservation #date, form.reservation #hour {
+form.reservation #reservation_date, form.reservation #reservation_hour {
 	cursor: pointer;
+}
+
+/*Modal reservation success*/
+.modal-reservation {
+    background: rgba(255,255,255,0.7);
+    display: none;
+    height: 100%;
+    left: 0px;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    z-index: 10000;
+}
+	.modal-reservation .body {
+	    background-color: #fff;
+	    border-radius: 10px;
+	    height: auto;
+	    left: 50%;
+	    padding: 40px;
+	    position: absolute;
+	    text-align: center;
+	    top: 50%;
+	    -webkit-transform: translate(-50%, -50%);
+	    -moz-transform: translate(-50%, -50%);
+	    -ms-transform: translate(-50%, -50%);
+	    -o-transform: translate(-50%, -50%);
+	    transform: translate(-50%, -50%);
+	    width: 500px;
+	}
+		.modal-reservation .body .icons {
+		    margin-bottom: 20px;
+		    max-width: 100px;
+		}
+			.modal-reservation .body #spinner {
+			    -webkit-animation: spinnerLoading 2.5s linear 0s infinite normal;
+			    -moz-animation: spinnerLoading 2.5s linear 0s infinite normal;
+			    animation: spinnerLoading 2.5s linear 0s infinite normal;
+			}
+			.modal-reservation .body #check {
+			    display: none;
+			    -webkit-transform: scale(0);
+			    -moz-transform: scale(0);
+			    -ms-transform: scale(0);
+			    -o-transform: scale(0);
+			    transform: scale(0);
+			    -webkit-transition: all 0.5s ease;
+			    -moz-transition: all 0.5s ease;
+			    -o-transition: all 0.5s ease;
+			    transition: all 0.5s ease;
+			}
+				.modal-reservation .body #check.checked {
+                    -webkit-transform: scale(1);
+                    -moz-transform: scale(1);
+                    -ms-transform: scale(1);
+                    -o-transform: scale(1);
+                    transform: scale(1);
+                }
+
+/*Animations*/
+@-webkit-keyframes spinnerLoading {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes spinnerLoading {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }

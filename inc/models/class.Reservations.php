@@ -2,7 +2,7 @@
 
 	if(isset($_POST['action']) && isset($_POST['src'])) {
 
-		require_once("../../../../../wp-load.php");
+		include(dirname(__FILE__, 6) . '/wp-load.php'); //Require wp load
 
 		if($_POST['src'] == 'reservations') {
 
@@ -79,6 +79,7 @@
 	class Reservations {
 
 		protected $table_name = "ecw_reservations";
+		protected $resp = [];
 
 		public function __construct() {
 		}
@@ -92,7 +93,7 @@
 			$sql = "CREATE TABLE IF NOT EXISTS $tname (
 						id INT(255) AUTO_INCREMENT PRIMARY KEY,
 						reservation_date DATE NOT NULL,
-						reservation_hour TIME NOT NULL,
+						reservation_hour VARCHAR(50) NOT NULL,
 						person_name VARCHAR(50) NOT NULL,
 						person_phone VARCHAR(30) NOT NULL,
 						person_email VARCHAR(50) NOT NULL,
@@ -151,7 +152,7 @@
 					VALUES ('$reservation_date', '$reservation_hour', '$person_name', '$person_phone', '$person_email', '$aditional_notes', '$category_id', '$service_id', '$employee_id')";
 
 			$query = $wpdb->query($sql);
-
+            
 			$resp['action'] = 'create';
 
 			if($query) {
@@ -159,11 +160,11 @@
 				require_once 'class.Emails.php';
 				$email = new Emails();
 
-
 				if($email->reservation($wpdb->insert_id)) {
+				    
 					$resp['code'] = 200;
 					$resp['msg'] = 'Resource saved successfully.';
-					$resp['reservation'] = $email->reservation($wpdb->insert_id);
+					
 				} else {
 					$resp['error2'] = $email->reservation($wpdb->insert_id);
 					$resp['error'] = $wpdb->last_error;
@@ -182,7 +183,7 @@
 				}
 
 			}
-
+			
 			echo json_encode($resp);
 
 		}
@@ -196,7 +197,7 @@
 			$sql = "UPDATE $tname SET reservation_date = '$reservation_date', reservation_hour = '$reservation_hour', person_name = '$person_name', person_phone = '$person_phone', person_email = '$person_email', aditional_notes = '$aditional_notes', category_id = '$category_id', service_id = '$service_id', employee_id = '$employee_id' WHERE id = '$id'";
 
 			$query = $wpdb->query($sql);
-
+			
 			$resp['action'] = 'update';
 
 			if($query) {

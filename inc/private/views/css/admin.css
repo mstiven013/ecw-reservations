@@ -1,3 +1,7 @@
+body {
+	background-color: #f1f1f1;
+}
+
 .wrap.ecw_reservations h1 {
     border-bottom: 1px solid #ccc;
     padding-bottom: 15px;
@@ -64,6 +68,10 @@ table.datatable tbody tr {
 		padding-bottom: 8px;
 		padding-top: 8px;
 	}
+	.wrap.ecw_reservations .send-btn[disabled],
+    .wrap.ecw_reservations .dt-button[disabled] {
+        cursor: initial;
+    }
 		.wrap.ecw_reservations .send-btn:hover,
 		.wrap.ecw_reservations .send-btn:active,
 		.wrap.ecw_reservations .dt-button:hover,
@@ -116,4 +124,42 @@ table.datatable tbody tr {
 /*Reservation form*/
 #reservation_date, #reservation_hour {
 	cursor: pointer;
+}
+
+/*Settings page*/
+.wrap.ecw_reservations .form-table {
+	margin: 0px;
+}
+	.wrap.ecw_reservations .form-table input[type="text"],
+	.wrap.ecw_reservations .form-table input[type="email"],
+	.wrap.ecw_reservations .form-table input[type="phone"],
+	.wrap.ecw_reservations .form-table input[type="password"],
+	.wrap.ecw_reservations .form-table textarea {
+		width: 25em;
+	}
+
+.wrap.ecw_reservations .nav {
+	line-height: 100%;
+	margin: 0px;
+}
+	.ecw_reservations .nav-item {
+		display: inline-flex;
+		line-height: normal;
+	}
+		.ecw_reservations .nav-link {
+			color: #000;
+		}
+		.ecw_reservations .nav-link:focus {
+			box-shadow: none;
+			outline: 0;
+		}
+		.ecw_reservations .nav-tabs .nav-item.show .nav-link, 
+		.ecw_reservations .nav-tabs .nav-link.active {
+			background-color: #1864a0;
+			color: #fff;
+		}
+
+.wrap.ecw_reservations .tab-pane {
+    padding: 20px;
+    background-color: #e8e8e8;
 }

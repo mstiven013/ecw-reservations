@@ -1,6 +1,6 @@
 <?php 
 
-	$info = [];
+	$resp = [];
 
 	class Emails {
 
@@ -14,11 +14,11 @@
 			$tname = $wpdb->prefix . 'ecw_emails'; // Table name
 
 			$sql = "CREATE TABLE IF NOT EXISTS $tname (
-						id INT(255) AUTO_INCREMENT PRIMARY KEY,
+						id INT(200) AUTO_INCREMENT PRIMARY KEY,
 						subject VARCHAR(100) NOT NULL,
-						message VARCHAR(1000) NOT NULL,
-						from VARCHAR(200) NOT NULL,
-						to VARCHAR(200) NOT NULL
+						message VARCHAR(100) NOT NULL,
+						email_from VARCHAR(200) NOT NULL,
+						email_to VARCHAR(200) NOT NULL
 					) CHARACTER SET utf8;";
 
 			$wpdb->query($sql);
@@ -33,18 +33,53 @@
 
 		public function reservation($id) {
 
-			require_once("../../../../../wp-load.php");
+			include(dirname(__FILE__, 6) . '/wp-load.php'); //Require wp load
 
 			global $wpdb;
 
-            $treservation = $wpdb->prefix . 'ecw_reservations'; // Table name
+			//Table vars
+            $treservation = $wpdb->prefix . 'ecw_reservations';
 			$tcategory = $wpdb->prefix . 'ecw_categories';
 			$tservice = $wpdb->prefix . 'ecw_services';
 			$temployee = $wpdb->prefix . 'ecw_employees';
 
-			//Date vars
-			$smonths = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
-			$emonths = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+			//Admin options vars
+			$adminEmail = '';
+			$mailName = '';
+			$mailSubject = '';
+			$smtpHost = '';
+
+			//Create $adminEmail var
+			if(get_option('ecwr_mail_email')) {
+				$adminEmail = esc_attr( get_option('ecwr_mail_email') );
+			} else {
+				$adminEmail = esc_attr( get_option('admin_email') );
+			}
+
+			//Create $mailName var
+			if(get_option('ecwr_mail_name')) {
+				$mailName = esc_attr( get_option('ecwr_mail_name') );
+			} else {
+				$mailName = 'Reservas - ' . $sitename;
+			}
+
+			//Create $mailSubject var
+			if(get_option('ecwr_mail_subject')) {
+				$mailSubject = esc_attr( get_option('ecwr_mail_subject') );
+			} else {
+				$mailSubject = 'Registro exitoso: cita para ' . $date;
+			}
+
+			//Create $smtpHost var
+			if(get_option('ecwr_smtp_host')) {
+				$smtpHost = esc_attr( get_option('ecwr_smtp_host') );
+			} else {
+				$smtpHost = 'localhost';
+			}
+
+			//Site vars
+			$sitename = get_bloginfo('name');
+			$home_url = get_home_url();
 
             $sql = "SELECT $treservation.*, $tservice.title AS service_title, $tcategory.title AS category_title, $temployee.name AS employee_name, $temployee.lastname AS employee_lastname FROM $treservation 
 					INNER JOIN $tcategory ON $treservation.category_id = $tcategory.id
@@ -60,30 +95,34 @@
 				require_once dirname(__FILE__, 2) . '/libs/PHPMailer/src/PHPMailer.php';
 				require_once dirname(__FILE__, 2) . '/libs/PHPMailer/src/SMTP.php';
             	require_once dirname(__FILE__, 2) . '/libs/PHPMailer/src/Exception.php';
-
+            	
+            	//Date vars
+    			$smonths = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+    			$emonths = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
             	$dt = new DateTime($query[0]->reservation_date);
 				$fdt = $dt->format('F d, Y');
 				$date = str_ireplace($emonths, $smonths, $fdt);
                 
                 $mail = new PHPMailer\PHPMailer\PHPMailer();  // Passing `true` enables exceptions
+
                 //Server settings
-                $mail->SMTPDebug = 2; // Enable verbose debug output
-                //$mail->isSMTP(); // Set mailer to use SMTP
-                $mail->Host = 'mail.webussines.com.co';  // Specify main and backup SMTP servers
-                $mail->SMTPAuth = false;                               // Enable SMTP authentication
+                $mail->SMTPDebug = 2;
+                //$mail->isSMTP();
+                $mail->Host = $smtpHost;
+                $mail->SMTPAuth = false;
             
                 //Recipients
-                $mail->setFrom('diseno@webussines.com', 'Reservas');
+                $mail->setFrom($adminEmail, $mailName);
                 $mail->addAddress($query[0]->person_email); // Add a recipient
+                $mail->addReplyTo($adminEmail); // Reply to admin
             
                 //Content
                 $mail->isHTML(true); // Set email format to HTML
-                //$mail->AddEmbeddedImage('img/logo.png', 'logopng', 'logopng');
-                $mail->Subject = 'Registro de nueva reserva';
+                $mail->Subject = $mailSubject;
                 
                 $mail->Body = '<html><body>';
 
-                $mail->Body = '<div style="width: 100%; background-color: #f2f2f2; padding-bottom: 20px; padding-top: 20px;">
+                $mail->Body .= '<div style="width: 100%; background-color: #f2f2f2; padding-bottom: 20px; padding-top: 20px;">
 								<div style="background-color: #fff; border-radius: 10px; overflow: hidden; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box;  margin-left: auto; margin-right: auto; width: 600px;">
 									<!--Header email-->
 									<div style="background-color: #1864a0; border-top-left-radius: 10px; border-top-right-radius: 10px; padding: 30px;">
@@ -92,82 +131,82 @@
 										</a>
 									</div>';
 
-				$mail->Body = '<div style="color: #AAAAAA; font-size: 16px; line-height: normal; padding: 50px; font-family: Arial;">
+				$mail->Body .= '<div style="color: #AAAAAA; font-size: 16px; line-height: normal; padding: 50px; font-family: Arial;">
 									<div style="padding-bottom: 10px;">
 										<p style="font-size: 18px; margin-top: 0px; text-align: left;">Se registró exitosamente la cita para el <b>' .  $date . '</b>.</p>
 										<p style="font-size: 16px; text-align: left;">A countinuación se muestran los datos de la reserva. Si existe algún error por favor comunicarse al correo escrito al final de este correo electrónico.</p>
 									</div>';
 
-				$mail->Body = '<div style="padding-bottom: 10px;">';
+				$mail->Body .= '<div style="padding-bottom: 10px;">';
 
-				$mail->Body = '<table width="100%" align="center" style="color: #AAAAAA; border-collapse: collapse;">';
+				$mail->Body .= '<table width="100%" align="center" style="color: #AAAAAA; border-collapse: collapse;">';
 									
-				$mail->Body =	'<tr>
+				$mail->Body .=	'<tr>
 									<th colspan="2" style="color: #1864a0; border-bottom: 1px solid #e4e4e4; font-size: 18px; padding: 20px; text-align: left;">
 										Información de la reserva:
 									</th>
 								</tr>';
 
-				$mail->Body =	'<tr>
+				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Fecha:
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $newDate . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' .  $date . '</td>
 								</tr>';
 
-				$mail->Body =	'<tr>
+				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Hora:
 									</th>
 									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->reservation_hour . '</td>
 								</tr>';
 
-				$mail->Body =	'<tr>
+				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Servicio:
 									</th>
 									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->service_title . '</td>
 								</tr>';
 
-				$mail->Body =	'<tr>
+				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Categoría:
 									</th>
 									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->category_title . '</td>
 								</tr>';
 
-				$mail->Body =	'<tr>
+				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Empleado:
 									</th>
 									<td style="border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->employee_name . ' ' . $query[0]->employee_lastname . '</td>
 								</tr>';
 								
-				$mail->Body =	'</table>';
+				$mail->Body .=	'</table>';
 
-				$mail->Body =	'<table width="100%" align="center" style="color: #AAAAAA; border-collapse: collapse; margin-top: 20px;">';
+				$mail->Body .=	'<table width="100%" align="center" style="color: #AAAAAA; border-collapse: collapse; margin-top: 20px;">';
 								
-				$mail->Body = 	'<tr>
+				$mail->Body .= 	'<tr>
 									<th colspan="2" style="color: #1864a0; border-bottom: 1px solid #e4e4e4; font-size: 18px; padding: 20px; text-align: left;">
 										Información personal:
 									</th>
 								</tr>';
 
-				$mail->Body = 	'<tr>
+				$mail->Body .= 	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Nombre completo:
 									</th>
 									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->person_name . '</td>
 								</tr>';
 
-				$mail->Body = 	'<tr>
+				$mail->Body .= 	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Teléfono / Celular:
 									</th>
 									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->person_phone . '</td>
 								</tr>';
 
-				$mail->Body = 	'<tr>
+				$mail->Body .= 	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
 										Correo electrónico:
 									</th>
@@ -175,43 +214,43 @@
 								</tr>';
 
 				if($query[0]->aditional_notes !== '' && $query[0]->aditional_notes !== null) {
-					$mail->Body = 	'<tr>
-										<th style="color: #6b6b6b; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
+					$mail->Body .= 	'<tr>
+										<th colspan="2" style="color: #6b6b6b; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px 20px 10px; text-align: left;">
 											Notas adicionales:
 										</th>
-										<td style="border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-											Notas adicionales
-										</td>
+									</tr>';
+					$mail->Body .= 	'<tr>
+										<td colspan="2" style="font-size: 16px; padding: 10px 20px 20px; text-align: left;">' . $query[0]->aditional_notes . '</td>
 									</tr>';
 				}
 								
-				$mail->Body =	'</table>
+				$mail->Body .=	'</table>
 								</div>
 								</div>';
 
-				$mail->Body =	'<div style="border-top: 1px solid #ccc; color: #AAAAAA; font-family: Arial; padding: 30px; text-align: center;">';
+				$mail->Body .=	'<div style="border-top: 1px solid #ccc; color: #AAAAAA; font-family: Arial; padding: 30px; text-align: center;">';
 								
-				$mail->Body =	'<p style="margin-top: 0px;">
+				$mail->Body .=	'<p style="margin-top: 0px;">
 									<a style="color: #AAAAAA;">Condiciones de servicio & Política de privacidad</a>
 								</p>';
 
-				$mail->Body =	'<p style="margin: 0px auto 10px;">© ' . date('Y') . '</p>';
+				$mail->Body .=	'<p style="margin: 0px auto 10px;">© ' . date('Y') . '</p>';
 								
-				$mail->Body =	'<p style="margin: 0px;">
-									<a href="' . get_home_url() . '" target="_blank" style="color: #AAAAAA;">' . bloginfo('name') . '</a>
+				$mail->Body .=	'<p style="margin: 0px;">
+									<a href="' . $home_url . '" target="_blank" style="color: #AAAAAA;">' . $sitename . '</a>
 								</p>';
 
-				$mail->Body =	'</div>
+				$mail->Body .=	'</div>
 								</div>
 								</div>';
             
                 $mail->Body .= '</body></html>';
             
                 if($mail->send()) {
-                    return $info;
+                    return true;
                 } else {
-                	$info['error'] = $mail->ErrorInfo;
-                	return $info;
+                	$resp['error'] = $mail->ErrorInfo;
+                	return $resp;
                 }
 				
 			} else {

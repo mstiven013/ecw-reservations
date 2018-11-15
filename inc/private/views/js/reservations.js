@@ -110,7 +110,8 @@ const Datepicker = () => {
 		autoclose: true,
 		format: 'yyyy-mm-dd',
 		changeMonth: true,
-        changeYear: true
+        changeYear: true,
+        startDate: new Date()
 	});
 
 }
@@ -121,8 +122,8 @@ const Timepicker = () => {
 	const cp = $('#reservation_hour');
 
 	cp.clockpicker({
+	    default: 'now',
 		align: 'left',
-		default: 'now',
 		donetext: 'Seleccionar',
 		twelvehour: true
 	});
@@ -137,8 +138,6 @@ const modalReservationUpdate = (tbody, table) => {
 
 		let data = table.row($(this).parents("tr")).data(); // Get row data
 
-		console.log(data)
-
 		//Change form values
 		let id = $('#reservations-form #id').val(data.id);
 		let action = $('#reservations-form #action').val('update');
@@ -152,7 +151,7 @@ const modalReservationUpdate = (tbody, table) => {
 		let person_email = $('#reservations-form #person_email').val(data.person_email);
 		let aditional_notes = $('#reservations-form #aditional_notes').val(data.aditional_notes);
 
-		let button = $('#reservations-form #send').val('Modificar reserva');
+		let button = $('#reservations-form #send').val('Modificar reserva').removeAttr('disabled');
 
 		modal.modal('show');
 
@@ -174,7 +173,7 @@ const modalAddReservation = () => {
 	let person_phone = $('#reservations-form #person_phone').val('');
 	let person_email = $('#reservations-form #person_email').val('');
 	let aditional_notes = $('#reservations-form #aditional_notes').val('');
-	let button = $('#reservations-form #send').val('Crear reserva');
+	let button = $('#reservations-form #send').val('Crear reserva').removeAttr('disabled');
 
 	modal.modal('show');
 
@@ -185,8 +184,6 @@ const deleteReservation = (tbody, table) => {
 	$(tbody).on('click', 'input.delete', function() {
 		let data = table.row($(this).parents("tr")).data(); // Get row data
 
-		console.log(JSON.stringify(send))
-
 		$.ajax({
 			method: "POST",
 			url: urlReservations,
@@ -195,9 +192,8 @@ const deleteReservation = (tbody, table) => {
 				"action": "delete",
 				"id": data.id
 			},
-		}).done(function(info){
-			let json_info = JSON.parse( info );
-			console.log(json_info)
+		}).done(function(deleted){
+			let json_info = JSON.parse( deleted );
 			$('.datatable').DataTable().ajax.reload();
 		});
 	});
@@ -221,7 +217,7 @@ const formFunctions = () => {
 		reqs.each(function() {
 			let v = $(this).val();
 
-			if(v == '' || v == ' ' || v === undefined || v === null || v == '0') {
+			if(v === '' || v == ' ' || v === undefined || v === null || v == '0') {
 
 				let errId = '#' + $(this).attr('id') + '-error';
 
@@ -235,20 +231,23 @@ const formFunctions = () => {
 
 		if(flag) {
 
-			let send = frm.serialize();
+			let data_send = frm.serialize();
+			$('#reservations-form #send').val('Creando...').attr('disabled', 'disabled');
+			console.log(data_send)
 
 			$.ajax({
 				method: "POST",
 				url: urlReservations,
-				data: send
-			}).done(function(info){
-				console.log(info)
-				var json_info = JSON.parse( info );
-
+				data: data_send
+			}).done(function(resp){
+			    console.log(resp);
+			    console.log(typeof resp);
+				resp = JSON.parse( resp );
+				console.log(typeof resp);
 				modal.modal('hide');
 				$('.datatable').DataTable().ajax.reload();
 				
-				getResponse(json_info);
+				getResponse(resp);
 			});
 
 		}
@@ -257,12 +256,10 @@ const formFunctions = () => {
 	reqs.on('change keyup', function() {
 		let v = $(this).val();
 
-		if(v != '' && v != ' ' && v !== undefined && v !== null && v != '0') {
-
+		if(v !== '' && v !== ' ' && v !== undefined && v !== null && v != '0') {
 			let errId = '#' + $(this).attr('id') + '-error';
 			$(errId).css('display', 'none');
 			$(errId).html('');
-
 		}
 	});
 
@@ -271,13 +268,13 @@ const formFunctions = () => {
 	});
 }
 
-const getResponse = (data) => {
+const getResponse = (resp) => {
 
 	let word = '';
-	console.log(data)
+	console.log(resp)
 
-	//Get data action
-	switch(data.action) {
+	//Get resp action
+	switch(resp.action) {
 		case 'create':
 			word = 'creado';
 			break;
@@ -291,8 +288,8 @@ const getResponse = (data) => {
 			break;
 	}
 
-	//Get data code response
-	switch (data.code) {
+	//Get resp code response
+	switch (resp.code) {
 		case 200:
 
 			successBtn.html('Cerrar');

@@ -37,7 +37,7 @@
 			    wp_enqueue_script('bootstrap-clockpicker.min.js');
 
 			    //Custom scripts
-			    wp_register_script('reservations.js', ECWR_DIR . 'inc/public/views/js/reservations.js', array(), false, 'all');
+			    wp_register_script('reservations.js', ECWR_DIR . 'inc/public/views/js/reservations.js',  '', '', false);
 			    wp_enqueue_script('reservations.js');
 			    wp_localize_script('reservations.js', 'info', array(
 			    	'ecw_url' => ECWR_DIR
