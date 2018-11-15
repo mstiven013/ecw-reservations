@@ -42,6 +42,10 @@
 			$tcategory = $wpdb->prefix . 'ecw_categories';
 			$tservice = $wpdb->prefix . 'ecw_services';
 			$temployee = $wpdb->prefix . 'ecw_employees';
+			
+			//Site vars
+			$sitename = get_bloginfo('name');
+			$home_url = get_home_url();
 
 			//Admin options vars
 			$adminEmail = '';
@@ -50,36 +54,32 @@
 			$smtpHost = '';
 
 			//Create $adminEmail var
-			if(get_option('ecwr_mail_email')) {
+			if(get_option('ecwr_mail_email') && get_option('ecwr_mail_email') !== '' && get_option('ecwr_mail_email') !== ' ') {
 				$adminEmail = esc_attr( get_option('ecwr_mail_email') );
 			} else {
 				$adminEmail = esc_attr( get_option('admin_email') );
 			}
 
 			//Create $mailName var
-			if(get_option('ecwr_mail_name')) {
+			if(get_option('ecwr_mail_name') && get_option('ecwr_mail_name') !== '' && get_option('ecwr_mail_name') !== ' ') {
 				$mailName = esc_attr( get_option('ecwr_mail_name') );
 			} else {
 				$mailName = 'Reservas - ' . $sitename;
 			}
 
 			//Create $mailSubject var
-			if(get_option('ecwr_mail_subject')) {
+			if(get_option('ecwr_mail_subject') && get_option('ecwr_mail_subject') !== '' && get_option('ecwr_mail_subject') !== ' ') {
 				$mailSubject = esc_attr( get_option('ecwr_mail_subject') );
 			} else {
 				$mailSubject = 'Registro exitoso: cita para ' . $date;
 			}
 
 			//Create $smtpHost var
-			if(get_option('ecwr_smtp_host')) {
+			if(get_option('ecwr_smtp_host') && get_option('ecwr_smtp_host') !== '' && get_option('ecwr_smtp_host') !== ' ') {
 				$smtpHost = esc_attr( get_option('ecwr_smtp_host') );
 			} else {
 				$smtpHost = 'localhost';
 			}
-
-			//Site vars
-			$sitename = get_bloginfo('name');
-			$home_url = get_home_url();
 
             $sql = "SELECT $treservation.*, $tservice.title AS service_title, $tcategory.title AS category_title, $temployee.name AS employee_name, $temployee.lastname AS employee_lastname FROM $treservation 
 					INNER JOIN $tcategory ON $treservation.category_id = $tcategory.id
@@ -92,9 +92,9 @@
 
 			if($query) {
 
-				require_once dirname(__FILE__, 2) . '/libs/PHPMailer/src/PHPMailer.php';
-				require_once dirname(__FILE__, 2) . '/libs/PHPMailer/src/SMTP.php';
-            	require_once dirname(__FILE__, 2) . '/libs/PHPMailer/src/Exception.php';
+				include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/PHPMailer.php');
+				include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/SMTP.php');
+            	include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/Exception.php');
             	
             	//Date vars
     			$smonths = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
@@ -112,9 +112,9 @@
                 $mail->SMTPAuth = false;
             
                 //Recipients
-                $mail->setFrom($adminEmail, $mailName);
                 $mail->addAddress($query[0]->person_email); // Add a recipient
-                $mail->addReplyTo($adminEmail); // Reply to admin
+                $mail->addCC($adminEmail); // Reply to admin
+                $mail->setFrom($adminEmail, $mailName);
             
                 //Content
                 $mail->isHTML(true); // Set email format to HTML
@@ -133,8 +133,8 @@
 
 				$mail->Body .= '<div style="color: #AAAAAA; font-size: 16px; line-height: normal; padding: 50px; font-family: Arial;">
 									<div style="padding-bottom: 10px;">
-										<p style="font-size: 18px; margin-top: 0px; text-align: left;">Se registró exitosamente la cita para el <b>' .  $date . '</b>.</p>
-										<p style="font-size: 16px; text-align: left;">A countinuación se muestran los datos de la reserva. Si existe algún error por favor comunicarse al correo escrito al final de este correo electrónico.</p>
+										<p style="font-size: 18px; margin-top: 0px; text-align: left;">' . htmlentities(esc_html("Se registró exitosamente la cita para el")) . ' <b>' .  $date . '</b>.</p>
+										<p style="font-size: 16px; text-align: left;">' . htmlentities(esc_html('A countinuación se muestran los datos de la reserva. Si existe algún error por favor comunicarse al correo escrito al final de este correo electrónico.')) . '</p>
 									</div>';
 
 				$mail->Body .= '<div style="padding-bottom: 10px;">';
@@ -143,43 +143,43 @@
 									
 				$mail->Body .=	'<tr>
 									<th colspan="2" style="color: #1864a0; border-bottom: 1px solid #e4e4e4; font-size: 18px; padding: 20px; text-align: left;">
-										Información de la reserva:
+										' . htmlentities(esc_html('Información de la reserva:')) . '
 									</th>
 								</tr>';
 
 				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Fecha:
+										' . htmlentities(esc_html('Fecha:')) . '
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' .  $date . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' .  htmlentities(esc_html($date)) . '</td>
 								</tr>';
 
 				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Hora:
+										' . htmlentities(esc_html('Hora:')) . '
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->reservation_hour . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . htmlentities($query[0]->reservation_hour) . '</td>
 								</tr>';
 
 				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Servicio:
+										' . htmlentities(esc_html('Servicio:')) . '
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->service_title . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . htmlentities(esc_html($query[0]->service_title)) . '</td>
 								</tr>';
 
 				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Categoría:
+										' . htmlentities(esc_html('Categoría:')) . '
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->category_title . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . htmlentities(esc_html($query[0]->category_title)) . '</td>
 								</tr>';
 
 				$mail->Body .=	'<tr>
 									<th style="color: #6b6b6b; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Empleado:
+										' . htmlentities(esc_html('Empleado:')) . '
 									</th>
-									<td style="border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->employee_name . ' ' . $query[0]->employee_lastname . '</td>
+									<td style="border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . htmlentities(esc_html($query[0]->employee_name)) . ' ' . htmlentities(esc_html($query[0]->employee_lastname)) . '</td>
 								</tr>';
 								
 				$mail->Body .=	'</table>';
@@ -188,39 +188,39 @@
 								
 				$mail->Body .= 	'<tr>
 									<th colspan="2" style="color: #1864a0; border-bottom: 1px solid #e4e4e4; font-size: 18px; padding: 20px; text-align: left;">
-										Información personal:
+										' . htmlentities(esc_html('Información personal:')) . '
 									</th>
 								</tr>';
 
 				$mail->Body .= 	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Nombre completo:
+										' . htmlentities(esc_html('Nombre completo:')) . '
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->person_name . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . htmlentities(esc_html($query[0]->person_name)) . '</td>
 								</tr>';
 
 				$mail->Body .= 	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Teléfono / Celular:
+										' . htmlentities(esc_html('Teléfono / Celular:')) . '
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->person_phone . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . htmlentities(esc_html($query[0]->person_phone)) . '</td>
 								</tr>';
 
 				$mail->Body .= 	'<tr>
 									<th style="color: #6b6b6b; border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">
-										Correo electrónico:
+										' . htmlentities(esc_html('Correo electrónico:')) . '
 									</th>
-									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . $query[0]->person_email . '</td>
+									<td style="border-bottom: 1px solid #e4e4e4; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px; text-align: left;">' . htmlentities(esc_html($query[0]->person_email)) . '</td>
 								</tr>';
 
 				if($query[0]->aditional_notes !== '' && $query[0]->aditional_notes !== null) {
 					$mail->Body .= 	'<tr>
 										<th colspan="2" style="color: #6b6b6b; border-top: 1px solid #e4e4e4; font-size: 16px; padding: 20px 20px 10px; text-align: left;">
-											Notas adicionales:
+											' . htmlentities(esc_html('Notas adicionales:')) . '
 										</th>
 									</tr>';
 					$mail->Body .= 	'<tr>
-										<td colspan="2" style="font-size: 16px; padding: 10px 20px 20px; text-align: left;">' . $query[0]->aditional_notes . '</td>
+										<td colspan="2" style="font-size: 16px; padding: 10px 20px 20px; text-align: left;">' . htmlentities(esc_html($query[0]->aditional_notes)) . '</td>
 									</tr>';
 				}
 								
@@ -229,15 +229,11 @@
 								</div>';
 
 				$mail->Body .=	'<div style="border-top: 1px solid #ccc; color: #AAAAAA; font-family: Arial; padding: 30px; text-align: center;">';
-								
-				$mail->Body .=	'<p style="margin-top: 0px;">
-									<a style="color: #AAAAAA;">Condiciones de servicio & Política de privacidad</a>
-								</p>';
 
-				$mail->Body .=	'<p style="margin: 0px auto 10px;">© ' . date('Y') . '</p>';
+				$mail->Body .=	'<p style="margin: 0px auto 10px;">' . htmlentities(esc_html('© ')) . date('Y') . '</p>';
 								
 				$mail->Body .=	'<p style="margin: 0px;">
-									<a href="' . $home_url . '" target="_blank" style="color: #AAAAAA;">' . $sitename . '</a>
+									<a href="' . $home_url . '" target="_blank" style="color: #AAAAAA;">' . htmlentities(esc_html($sitename)) . '</a>
 								</p>';
 
 				$mail->Body .=	'</div>

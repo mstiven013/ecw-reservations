@@ -117,7 +117,7 @@
 
 		  	<div class="col-12 form-group">
 		  		<label for="aditional_notes">Notas adicionales:</label>
-		  		<textarea name="aditional_notes" id="aditional_notes" placeholder="Escribe aquí las notas adicionales de la reserva en caso de que existan..."></textarea>
+		  		<textarea class="form-control" name="aditional_notes" id="aditional_notes" placeholder="Escribe aquí las notas adicionales de la reserva en caso de que existan..."></textarea>
 		  		<p id="aditional_notes-error" class="error"></p>
 		  	</div>
 	  	</div>

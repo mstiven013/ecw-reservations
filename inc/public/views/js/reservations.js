@@ -23,7 +23,7 @@ const Datepicker = () => {
 		language: "es",
 		clearBtn: true,
 		autoclose: true,
-		format: 'MM dd, yyyy',
+		format: 'yyyy-mm-dd',
 		changeMonth: true,
         changeYear: true,
         startDate: new Date()

@@ -9,7 +9,9 @@
 
 		//Function to return reservation form in "reservation_form" shortcode
 		public function reservation_form() {
-			$content = file_get_contents(ECWR_DIR . 'inc/public/views/form.php');
+			ob_start();
+			include(dirname(__FILE__) . '/views/form.php');
+			$content = ob_get_clean();
 			return $content;
 		}
 
