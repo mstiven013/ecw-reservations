@@ -3,7 +3,7 @@
 <form class="reservation" id="reservation" method="POST">
 	
 	<!--FIRST STEP-->
-	<div id="first-step">
+	<div <?php (esc_attr(get_option('ecwr_onestep_form'))  == "si") ? 'id="first-step"' : '' ?> >
 		<div class="row">
 			<div class="col-12 col-md-6 col-lg-6 form-group">
 				<label for="reservation_date">
@@ -89,7 +89,7 @@
 	</div>
 
 	<!--SECOND STEP-->
-	<div id="second-step">
+	<div <?php (esc_attr(get_option('ecwr_onestep_form'))  == "si") ? 'id="second-step"' : '' ?> >
 		<div class="row">
 			<div class="col form-group">
 				<h2>Detalles personales</h2>

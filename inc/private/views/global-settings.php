@@ -1,45 +1,57 @@
+<?php 
+
+   function page_tabs( $current = 'generals' ) {
+
+      $tabs = array(
+         'generals'  => __( 'Generales', ECWR_NS ),
+         'form'  => __( 'Formulario', ECWR_NS ),
+         'email'   => __( 'Correo electrónico', ECWR_NS ),
+         'help'  => __( 'Ayuda', ECWR_NS )
+      );
+      $html = '<h2 class="nav-tab-wrapper">';
+
+      foreach( $tabs as $tab => $name ){
+         $class = ( $tab == $current ) ? 'nav-tab-active' : '';
+         $html .= '<a class="nav-tab ' . $class . '" href="?page=ecwr_global_settings&tab=' . $tab . '">' . $name . '</a>';
+      }
+
+      $html .= '</h2>';
+
+      echo $html;
+   }
+
+?>
+
 <div class="wrap ecw_reservations">
 
-	<h1><?php _e('Ajustes generales', ECWR_NS); ?></h1>
+   <h1><?php _e('Ajustes generales', ECWR_NS); ?></h1>
 
-	<form method="post" action="options.php"> 
-		<?php settings_fields( 'ecwr-settings-group' ); ?>
-    	<?php do_settings_sections( 'ecwr-settings-group' ); ?>
+   <?php
 
-		<ul class="nav nav-tabs">
-			<li class="nav-item">
-				<a class="nav-link active" data-toggle="tab" href="#emails">
-					<?php _e('Correo electrónico', ECWR_NS); ?>
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#generales">
-					<?php _e('Generales', ECWR_NS); ?>
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#help">
-					<?php _e('Ayuda', ECWR_NS); ?>
-				</a>
-			</li>
-		</ul>
+      $tab = ( ! empty( $_GET['tab'] ) ) ? esc_attr( $_GET['tab'] ) : 'generals';
+      page_tabs( $tab );
 
-		<div class="tab-content">
+      switch ($tab) {
+         case 'generals':
+            include('settings/general.php');
+         break;
 
-			<div id="emails" class="tab-pane active">
-				<?php include('settings/email.php'); ?>
-			</div>
+         case 'form':
+            include('settings/form.php');
+         break;
 
-			<div id="generales" class="tab-pane">
-				<?php include('settings/general.php'); ?>
-			</div>
+         case 'email':
+            include('settings/email.php');
+         break;
 
-			<div id="help" class="tab-pane">
-				<?php include('settings/help.php'); ?>
-			</div>
+         case 'help':
+            include('settings/help.php');
+         break;
 
-		</div>
+         default:
+            include('settings/general.php');
+         break;
+      }
+   ?>
 
-		<?php submit_button(); ?>
-	</form>
 </div>

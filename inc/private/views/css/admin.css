@@ -85,6 +85,10 @@ table.datatable tbody tr {
 	text-align: center;
 }
 
+.ecwr_form_content {
+	padding: 20px;
+}
+
 /*Clickpicker and datepicker*/
 .popover {
 	z-index: 100000 !important;
@@ -163,3 +167,42 @@ table.datatable tbody tr {
     padding: 20px;
     background-color: #e8e8e8;
 }
+
+/*Form settings*/
+.ecwr_form_content .section-title {
+	border-bottom: 1px solid #cccccc;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+}
+
+ul.fields-list {
+    display: block;
+    margin: 0px;
+}
+	ul.fields-list li {
+		border: 1px solid #cccccc;
+	    border-radius: 5px;
+	    margin: 10px auto;
+	    padding: 10px 20px;
+	    position: relative;
+	}
+		ul.fields-list li p {
+			margin: 0px;
+		}
+			ul.fields-list li .name {
+			    font-size: 18px;
+			    font-weight: bold;
+			}
+			ul.fields-list li .type {
+			    font-size: 15px;
+			}
+		ul.fields-list li .editar {
+			cursor: pointer;
+			position: absolute;
+			right: 30px;
+			-webkit-transform: translateY(-50%);;
+			-ms-transform: translateY(-50%);;
+			-o-transform: translateY(-50%);;
+			transform: translateY(-50%);;
+			top: 50%;
+		}

@@ -120,6 +120,22 @@
 		    wp_enqueue_style('select2.min.css');
 	    }
 
+	    if($pagenow === 'admin.php' && 'ecwr_global_settings' == $_GET['page'] && 'form' == $_GET['tab']) {
+
+	    	wp_register_script('vue.js', 'https://cdn.jsdelivr.net/npm/vue/dist/vue.js', array(), false, 'all');
+		    wp_enqueue_script('vue.js');
+
+		    wp_register_style('all.css', 'https://use.fontawesome.com/releases/v5.5.0/css/all.css', array(), false, 'all');
+		    wp_enqueue_style('all.css');
+		    
+			wp_register_script('form.js', ECWR_DIR . 'inc/private/views/js/form.js', array(), false, 'all');
+		    wp_enqueue_script('form.js');
+		    wp_localize_script('form.js', 'info', array(
+			    'ecw_url' => ECWR_DIR,
+			    'sitename' => get_bloginfo('name')
+			));
+	    }
+
 	    if($pagenow === 'admin.php' && 'ecwr_services' == $_GET['page']) {
 			wp_register_script('services.js', ECWR_DIR . 'inc/private/views/js/services.js', array(), false, 'all');
 		    wp_enqueue_script('services.js');

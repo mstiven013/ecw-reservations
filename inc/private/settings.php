@@ -103,6 +103,9 @@
 			register_setting( 'ecwr-settings-group', 'ecwr_min_datepicker' );
 			register_setting( 'ecwr-settings-group', 'ecwr_max_datepicker' );
 
+			//General settings options
+			register_setting( 'ecwr-settings-group', 'ecwr_onestep_form' );
+
 		}
 	}
 
