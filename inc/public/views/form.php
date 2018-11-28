@@ -18,6 +18,7 @@
 				<div class="form-group col-12 <?php echo "col-md-$field->field_columns"; ?>">
 				
 					<label for="<?php echo $field->field_id; ?>">
+						<?php if($field->field_required == 'true') { echo '<span class="req">*</span>'; } ?>
 						<?php echo $field->field_label; ?>
 					</label>
 
@@ -31,7 +32,8 @@
 									id="<?php echo $field->field_id; ?>" 
 									class="<?php echo $field->field_class; ?>" 
 									placeholder="<?php echo $field->field_placeholder; ?>" 
-									<?php if($field->field_required) { echo 'required'; } ?>
+									autocomplete="<?php echo $field->field_autocomplete; ?>" 
+									<?php if($field->field_required == 'true') { echo 'required'; } ?>
 								/>
 							<?php break;
 
@@ -41,8 +43,9 @@
 									name="<?php echo $field->field_name; ?>" 
 									id="<?php echo $field->field_id; ?>" 
 									class="<?php echo $field->field_class; ?>" 
-									placeholder="<?php echo $field->field_placeholder; ?>" 
-									<?php if($field->field_required) { echo 'required'; } ?>
+									placeholder="<?php echo $field->field_placeholder; ?>"
+									autocomplete="<?php echo $field->field_autocomplete; ?>"  
+									<?php if($field->field_required == 'true') { echo 'required'; } ?>
 								/>
 							<?php break;
 
@@ -52,9 +55,15 @@
 									name="<?php echo $field->field_name; ?>" 
 									id="<?php echo $field->field_id; ?>" 
 									class="<?php echo $field->field_class; ?>"
-									<?php if($field->field_required) { echo 'required'; } ?>
+									<?php if($field->field_required == 'true') { echo 'required'; } ?>
 								>
 									<option value="0" selected><?php echo $field->field_placeholder; ?></option>
+									<?php 
+
+										$options = explode(',', $field->field_options);
+										foreach ($options as $opt) { ?>
+											<option value="<?php echo $opt; ?>"><?php echo $opt; ?></option>
+									<?php } ?>
 										
 								</select>
 							
@@ -67,7 +76,8 @@
 									id="<?php echo $field->field_id; ?>" 
 									class="<?php echo $field->field_class; ?>" 
 									placeholder="<?php echo $field->field_placeholder; ?>" 
-									<?php if($field->field_required) { echo 'required'; } ?>
+									autocomplete="<?php echo $field->field_autocomplete; ?>"  
+									<?php if($field->field_required == 'true') { echo 'required'; } ?>
 								/>
 							<?php break;
 
@@ -78,7 +88,8 @@
 									id="<?php echo $field->field_id; ?>" 
 									class="<?php echo $field->field_class; ?> date-select" 
 									placeholder="<?php echo $field->field_placeholder; ?>" 
-									<?php if($field->field_required) { echo 'required'; } ?>
+									autocomplete="<?php echo $field->field_autocomplete; ?>"  
+									<?php if($field->field_required == 'true') { echo 'required'; } ?>
 								/>
 							<?php break;
 
@@ -89,7 +100,8 @@
 									id="<?php echo $field->field_id; ?>" 
 									class="<?php echo $field->field_class; ?> hour-select" 
 									placeholder="<?php echo $field->field_placeholder; ?>" 
-									<?php if($field->field_required) { echo 'required'; } ?>
+									autocomplete="<?php echo $field->field_autocomplete; ?>"  
+									<?php if($field->field_required == 'true') { echo 'required'; } ?>
 								/>
 							<?php break;
 
@@ -100,7 +112,8 @@
 									id="<?php echo $field->field_id; ?>" 
 									class="<?php echo $field->field_class; ?>" 
 									placeholder="<?php echo $field->field_placeholder; ?>" 
-									<?php if($field->field_required) { echo 'required'; } ?>
+									autocomplete="<?php echo $field->field_autocomplete; ?>"  
+									<?php if($field->field_required == 'true') { echo 'required'; } ?>
 								/>
 							<?php break;
 						}

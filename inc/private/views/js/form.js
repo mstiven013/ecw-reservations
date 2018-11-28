@@ -34,7 +34,8 @@ var list = new Vue({
 		  	field_state: true,
 		  	field_required: true,
 		  	field_options: '',
-		  	field_order: '1'
+		  	field_order: '1',
+		  	field_autocomplete: 'off'
 	  	},
 	  	fieldList: [],
 
@@ -67,7 +68,8 @@ var list = new Vue({
 					"field_state": me.field.field_state,
 					"field_required": me.field.field_required,
 					"field_options": me.field.field_options,
-					"field_order": me.field.field_order
+					"field_order": me.field.field_order,
+					"field_autocomplete": me.field.field_autocomplete
 				}
 			}).done(function(info){
 				var json_info = JSON.parse( info );
@@ -75,7 +77,7 @@ var list = new Vue({
 
 				getAllFields();
 				me.getFields();
-				me.field = { field_name: '', field_label: '', field_placeholder: '', field_type: '', field_id: '', field_class: '', field_columns: '12', field_state: true, field_required: true, field_options: '', field_order: '1' }
+				me.field = { field_name: '', field_label: '', field_placeholder: '', field_type: '', field_id: '', field_class: '', field_columns: '12', field_state: true, field_required: true, field_options: '', field_order: '1', field_autocomplete: 'off' }
 				me.formEdit = false;
 		    	me.formTitle = 'Agregar campo';
 		    	me.formBtn = 'Agregar';
@@ -100,7 +102,8 @@ var list = new Vue({
 					"field_state": me.field.field_state,
 					"field_required": me.field.field_required,
 					"field_options": me.field.field_options,
-					"field_order": me.field.field_order
+					"field_order": me.field.field_order,
+					"field_autocomplete": me.field.field_autocomplete
 				}
 			}).done(function(info){
 				var json_info = JSON.parse( info );
@@ -108,7 +111,7 @@ var list = new Vue({
 
 				getAllFields();
 				me.getFields();
-				me.field = { field_name: '', field_label: '', field_placeholder: '', field_type: '', field_id: '', field_class: '', field_columns: '12', field_state: true, field_required: true, field_options: '', field_order: '1' }
+				me.field = { field_name: '', field_label: '', field_placeholder: '', field_type: '', field_id: '', field_class: '', field_columns: '12', field_state: true, field_required: true, field_options: '', field_order: '1', field_autocomplete: 'off' }
 			});
 
   		}
@@ -146,7 +149,7 @@ var list = new Vue({
     	this.formEdit = false;
     	this.formTitle = 'Agregar campo';
     	this.formBtn = 'Agregar';
-    	this.field = { field_name: '', field_label: '', field_placeholder: '', field_type: '', field_id: '', field_class: '', field_columns: '12', field_state: true, field_required: true, field_options: '', field_order: '1' }
+    	this.field = { field_name: '', field_label: '', field_placeholder: '', field_type: '', field_id: '', field_class: '', field_columns: '12', field_state: true, field_required: true, field_options: '', field_order: '1', field_autocomplete: 'off' }
     }
   },
   computed: {
@@ -169,7 +172,7 @@ var list = new Vue({
 			<ul class="fields-list">
 				<li v-for="item in orderedFields" :key="item.name">
 					<p class="name">{{item.field_label}}</p>
-					<p class="type">Tipo de campo: <b>{{item.field_type}}</b></p>
+					<p class="type">Orden: {{item.field_order}}</p>
 					<div class="actions">
 						<a v-on:click="changeAction(item)" class="update-icon">
 							<i class="fas fa-edit"></i>
@@ -217,6 +220,13 @@ var list = new Vue({
 							<input type="radio" name="type" id="type-hour" v-on:click="field.field_type = 'hour'" v-model="field.field_type" value="hour" />
 							<label for="type-hour">Reloj</label>
 						</div>
+					</div>
+					
+					<div v-if="field.field_type == 'select'" class="form-group col-12">
+						<label for="field_options">Opciones:</label>
+						<label for="field_options" style="font-size: 13px;"><i>Las opciones se deben separar por <b>","</b></i></label>
+						<textarea name="field_options" id="field_options" v-model="field.field_options" placeholder="Ejemplo: Opción 1, Opción 2...">
+						</textarea>
 					</div>
 
 					<div class="form-group col-12 col-md-6">
@@ -277,12 +287,24 @@ var list = new Vue({
 					<div class="form-group col-12 col-md-6">
 						<label for="field_required">¿Campo obligatorio?</label><br/>
 						<div class="form-check form-check-inline">
-							<input type="radio" name="required" id="field-required" v-on:click="field.field_required = true" v-model="field.field_required" value="true" />
+							<input type="radio" name="required" id="field-required" v-on:click="field.field_required = 'true'" v-model="field.field_required" value="true" />
 							<label for="field-required">Obligatorio</label>
 						</div>
 						<div class="form-check form-check-inline">
-							<input type="radio" name="required" id="field-optional" v-on:click="field.field_required = false" v-model="field.field_required" value="false" />
+							<input type="radio" name="required" id="field-optional" v-on:click="field.field_required = 'false'" v-model="field.field_required" value="false" />
 							<label for="field-optional">Opcional</label>
+						</div>
+					</div>
+
+					<div class="form-group col-12 col-md-6">
+						<label>Autocompletar</label><br/>
+						<div class="form-check form-check-inline">
+							<input type="radio" name="autocomplete" id="field-autocomplete-on" v-on:click="field.field_autocomplete = 'on'" v-model="field.field_autocomplete" value="on" />
+							<label for="field-autocomplete">Sí</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input type="radio" name="autocomplete" id="field-no-autocomplete" v-on:click="field.field_autocomplete = 'off'" v-model="field.field_autocomplete" value="off" />
+							<label for="field-no-autocomplete">No</label>
 						</div>
 					</div>
 

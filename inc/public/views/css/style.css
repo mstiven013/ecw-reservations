@@ -49,6 +49,34 @@ form.reservation #reservation_date, form.reservation #reservation_hour {
 	cursor: pointer;
 }
 
+form.reservation .btn {
+	box-shadow: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    height: auto;
+    line-height: 100%;
+    padding: 13px 25px 15px;
+    -webkit-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+}
+	form.reservation .btn.reservar {
+		background-color: #1864a0;
+	}
+		form.reservation .btn.reservar:hover {
+			background-color: #09375a;
+			color: #fff;
+		}
+	form.reservation .btn.reset {
+		background-color: red;
+	}
+		form.reservation .btn.reset:hover {
+			background-color: #bf0000;
+			color: #fff;
+		}
+
 /*Modal reservation success*/
 .modal-reservation {
     background: rgba(255,255,255,0.7);

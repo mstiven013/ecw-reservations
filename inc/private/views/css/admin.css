@@ -227,6 +227,34 @@ ul.fields-list {
 					color: red;
 				}
 
+.form-fields .button {
+	box-shadow: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    height: auto;
+    line-height: 100%;
+    padding: 13px 25px 15px;
+    -webkit-transition: all 0.4s ease;
+    -o-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+}
+	.form-fields .button#save {
+		background-color: #1864a0;
+	}
+		.form-fields .button#save:hover {
+			background-color: #09375a;
+			color: #fff;
+		}
+	.form-fields .button#cancel {
+		background-color: red;
+	}
+		.form-fields .button#cancel:hover {
+			background-color: #bf0000;
+			color: #fff;
+		}
+
 /*Email settings*/
 .ecwr_form_content.email-settings .form-table {
 	margin: 20px 0px;

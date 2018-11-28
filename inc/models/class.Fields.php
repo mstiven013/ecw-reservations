@@ -16,7 +16,7 @@
 				case 'create':
 
 					$fields = new EcwrFields();
-					$fields->create($_POST['field_name'], $_POST['field_id'], $_POST['field_class'], $_POST['field_label'], $_POST['field_placeholder'], $_POST['field_type'], $_POST['field_columns'], $_POST['field_options'], $_POST['field_required'], $_POST['field_state'], $_POST['field_order']);
+					$fields->create($_POST['field_name'], $_POST['field_id'], $_POST['field_class'], $_POST['field_label'], $_POST['field_placeholder'], $_POST['field_type'], $_POST['field_columns'], $_POST['field_options'], $_POST['field_required'], $_POST['field_state'], $_POST['field_order'], $_POST['field_autocomplete']);
 					break;
 
 				case 'update':
@@ -24,7 +24,7 @@
 					$id = $_POST['id'];
 
 					$fields = new EcwrFields();
-					$fields->update($id, $_POST['field_name'], $_POST['field_id'], $_POST['field_class'], $_POST['field_label'], $_POST['field_placeholder'], $_POST['field_type'], $_POST['field_columns'], $_POST['field_options'], $_POST['field_required'], $_POST['field_state'], $_POST['field_order']);
+					$fields->update($id, $_POST['field_name'], $_POST['field_id'], $_POST['field_class'], $_POST['field_label'], $_POST['field_placeholder'], $_POST['field_type'], $_POST['field_columns'], $_POST['field_options'], $_POST['field_required'], $_POST['field_state'], $_POST['field_order'], $_POST['field_autocomplete']);
 					break;
 
 				case 'delete':
@@ -71,7 +71,8 @@
 						field_options VARCHAR(200),
 						field_required VARCHAR(200) NOT NULL DEFAULT 'false',
 						field_state VARCHAR(200) NOT NULL DEFAULT 'true',
-						field_order INT(200) NOT NULL DEFAULT 1
+						field_order INT(200) NOT NULL DEFAULT 1,
+						field_autocomplete VARCHAR(50) NOT NULL DEFAULT 'off'
 					) CHARACTER SET utf8;";
 
 			$wpdb->query($sql);
@@ -106,13 +107,13 @@
 
 		}
 
-		public function create($field_name, $field_id, $field_class, $field_label, $field_placeholder, $field_type, $field_columns, $field_options, $field_required, $field_state, $field_order) {
+		public function create($field_name, $field_id, $field_class, $field_label, $field_placeholder, $field_type, $field_columns, $field_options, $field_required, $field_state, $field_order, $field_autocomplete) {
 
 			global $wpdb;
 
 			$tname = $wpdb->prefix . $this->table_name; // Table name
 
-			$sql = "INSERT INTO $tname (field_name, field_id, field_class, field_label, field_placeholder, field_type, field_columns, field_options, field_required, field_state, field_order) VALUES ('$field_name', '$field_id', '$field_class', '$field_label', '$field_placeholder', '$field_type', '$field_columns', '$field_options', '$field_required', '$field_state', '$field_order')";
+			$sql = "INSERT INTO $tname (field_name, field_id, field_class, field_label, field_placeholder, field_type, field_columns, field_options, field_required, field_state, field_order, field_autocomplete) VALUES ('$field_name', '$field_id', '$field_class', '$field_label', '$field_placeholder', '$field_type', '$field_columns', '$field_options', '$field_required', '$field_state', '$field_order', '$field_autocomplete')";
 
 			$query = $wpdb->query($sql);
 
@@ -137,13 +138,13 @@
 
 		}
 
-		public function update($id, $field_name, $field_id, $field_class, $field_label, $field_placeholder, $field_type, $field_columns, $field_options, $field_required, $field_state, $field_order) {
+		public function update($id, $field_name, $field_id, $field_class, $field_label, $field_placeholder, $field_type, $field_columns, $field_options, $field_required, $field_state, $field_order, $field_autocomplete) {
 
 			global $wpdb;
 
 			$tname = $wpdb->prefix . $this->table_name; // Table name
 
-			$sql = "UPDATE $tname SET field_name = '$field_name', field_id = '$field_id', field_class = '$field_class', field_label = '$field_label', field_placeholder = '$field_placeholder', field_type = '$field_type', field_columns = '$field_columns', field_options = '$field_options', field_required = '$field_required', field_state = '$field_state', field_order = '$field_order' WHERE id = '$id'";
+			$sql = "UPDATE $tname SET field_name = '$field_name', field_id = '$field_id', field_class = '$field_class', field_label = '$field_label', field_placeholder = '$field_placeholder', field_type = '$field_type', field_columns = '$field_columns', field_options = '$field_options', field_required = '$field_required', field_state = '$field_state', field_order = '$field_order', field_autocomplete = '$field_autocomplete' WHERE id = '$id'";
 
 			$query = $wpdb->query($sql);
 
