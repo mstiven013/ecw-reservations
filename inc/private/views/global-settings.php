@@ -5,7 +5,8 @@
       $tabs = array(
          'generals'  => __( 'Generales', ECWR_NS ),
          'form'  => __( 'Formulario', ECWR_NS ),
-         'email'   => __( 'Correo electrónico', ECWR_NS ),
+         'template_email'   => __( 'Plantilla correo electrónico', ECWR_NS ),
+         'settings_email'   => __( 'Configuración correo electrónico', ECWR_NS ),
          'help'  => __( 'Ayuda', ECWR_NS )
       );
       $html = '<h2 class="nav-tab-wrapper">';
@@ -40,8 +41,12 @@
             include('settings/form.php');
          break;
 
-         case 'email':
-            include('settings/email.php');
+         case 'template_email':
+            include('settings/template-email.php');
+         break;
+
+         case 'settings_email':
+            include('settings/settings-email.php');
          break;
 
          case 'help':

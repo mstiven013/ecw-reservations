@@ -1,6 +1,6 @@
 <form class="ecwr_form_content" method="post" action="options.php"> 
-	<?php settings_fields( 'ecwr-settings-group' ); ?>
-	<?php do_settings_sections( 'ecwr-settings-group' ); ?>
+	<?php settings_fields( 'ecwr-general-settings-group' ); ?>
+	<?php do_settings_sections( 'ecwr-general-settings-group' ); ?>
 
 	<h5><?php _e('Ajustes del formulario:', ECWR_NS); ?></h5>
 

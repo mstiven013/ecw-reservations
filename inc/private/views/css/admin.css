@@ -175,6 +175,14 @@ table.datatable tbody tr {
 	padding-bottom: 20px;
 }
 
+.ecwr_form_content .col-form {
+	padding-left: 50px;
+}
+
+.ecwr_form_content select {
+	width: 100%;
+}
+
 ul.fields-list {
     display: block;
     margin: 0px;
@@ -196,13 +204,30 @@ ul.fields-list {
 			ul.fields-list li .type {
 			    font-size: 15px;
 			}
-		ul.fields-list li .editar {
-			cursor: pointer;
+		ul.fields-list li .actions {
 			position: absolute;
-			right: 30px;
+			right: 15px;
 			-webkit-transform: translateY(-50%);;
 			-ms-transform: translateY(-50%);;
 			-o-transform: translateY(-50%);;
 			transform: translateY(-50%);;
 			top: 50%;
 		}
+			ul.fields-list li .actions a {
+				cursor: pointer;
+				display: inline-block;
+				margin: 0px 5px;
+				text-align: center;
+				width: 20px;
+			}
+				ul.fields-list li .actions .update-icon {
+					color: #007bff;
+				}
+				ul.fields-list li .actions .delete-icon {
+					color: red;
+				}
+
+/*Email settings*/
+.ecwr_form_content.email-settings .form-table {
+	margin: 20px 0px;
+}

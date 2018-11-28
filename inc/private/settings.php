@@ -7,8 +7,8 @@
 
 			//Add reservations page
 			add_menu_page(
-				__('ECW Reservas', ECWR_NS),
-				__('ECW Reservas', ECWR_NS),
+				__('Reservas', ECWR_NS),
+				__('Reservas', ECWR_NS),
 				'administrator',
 				'ecwr_all_reservations',
 				'ecwr_all_reservations'
@@ -26,36 +26,6 @@
 
 			add_action( 'admin_init', 'register_ecwr_global_settings' );
 
-			//Add services submenu to reservations menu
-			add_submenu_page(
-				'ecwr_all_reservations',
-				__('Servicios', ECWR_NS),
-				__('Servicios', ECWR_NS),
-				'administrator',
-				'ecwr_services',
-				'ecwr_services'
-			);
-
-			//Add services submenu to reservations menu
-			add_submenu_page(
-				'ecwr_all_reservations',
-				__('Empleados', ECWR_NS),
-				__('Empleados', ECWR_NS),
-				'administrator',
-				'ecwr_employees',
-				'ecwr_employees'
-			);
-
-			//Add categories submenu to reservations menu
-			add_submenu_page(
-				'ecwr_all_reservations',
-				__('Categorías', ECWR_NS),
-				__('Categorías', ECWR_NS),
-				'administrator',
-				'ecwr_categories',
-				'ecwr_categories'
-			);
-
 		}
 	}
 
@@ -71,40 +41,26 @@
 		}
 	}
 
-	if(!function_exists('ecwr_services')) {
-		function ecwr_services() {
-			require_once('views/services.php');
-		}
-	}
-
-	if(!function_exists('ecwr_categories')) {
-		function ecwr_categories() {
-			require_once('views/categories.php');
-		}
-	}
-
-	if(!function_exists('ecwr_employees')) {
-		function ecwr_employees() {
-			require_once('views/employees.php');
-		}
-	}
-
 	if(!function_exists('register_ecwr_global_settings')) {
 		function register_ecwr_global_settings() {
 
 			//Register email options
-			register_setting( 'ecwr-settings-group', 'ecwr_mail_email' );
-			register_setting( 'ecwr-settings-group', 'ecwr_mail_name' );
-			register_setting( 'ecwr-settings-group', 'ecwr_smtp_host' );
-			register_setting( 'ecwr-settings-group', 'ecwr_smtp_user' );
-			register_setting( 'ecwr-settings-group', 'ecwr_smtp_password' );
+			register_setting( 'ecwr-mail-settings-group', 'ecwr_mail_email' );
+			register_setting( 'ecwr-mail-settings-group', 'ecwr_mail_name' );
+			register_setting( 'ecwr-mail-settings-group', 'ecwr_smtp_host' );
+			register_setting( 'ecwr-mail-settings-group', 'ecwr_smtp_user' );
+			register_setting( 'ecwr-mail-settings-group', 'ecwr_smtp_password' );
+
+			//Register email template options
+			register_setting( 'ecwr-mail-template-group', 'ecwr_mail_to' );
+			register_setting( 'ecwr-mail-template-group', 'ecwr_reservation_date' );
+			register_setting( 'ecwr-mail-template-group', 'ecwr_reservation_hour' );
+			register_setting( 'ecwr-mail-template-group', 'ecwr_mail_template' );
 
 			//Register general options
-			register_setting( 'ecwr-settings-group', 'ecwr_min_datepicker' );
-			register_setting( 'ecwr-settings-group', 'ecwr_max_datepicker' );
-
-			//General settings options
-			register_setting( 'ecwr-settings-group', 'ecwr_onestep_form' );
+			register_setting( 'ecwr-general-settings-group', 'ecwr_min_datepicker' );
+			register_setting( 'ecwr-general-settings-group', 'ecwr_max_datepicker' );
+			register_setting( 'ecwr-general-settings-group', 'ecwr_onestep_form' );
 
 		}
 	}

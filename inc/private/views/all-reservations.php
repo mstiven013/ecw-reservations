@@ -8,12 +8,9 @@
 		<thead>
 			<tr>
 				<th>ID:</th>
-				<th>Nombre:</th>
 				<th>Correo electrónico:</th>
 				<th>Fecha:</th>
 				<th>Hora:</th>
-				<th>Categoría:</th>
-				<th>Servicio:</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -21,12 +18,9 @@
 		<tfoot>
 			<tr>
 				<th>ID:</th>
-				<th>Nombre:</th>
 				<th>Correo electrónico:</th>
 				<th>Fecha:</th>
 				<th>Hora:</th>
-				<th>Categoría:</th>
-				<th>Servicio:</th>
 				<th></th>
 			</tr>
 		</tfoot>

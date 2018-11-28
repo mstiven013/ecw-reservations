@@ -61,12 +61,9 @@ const initDataTable = () => {
 		},
 		"columns": [
 			{"data": "id"},
-			{"data": "person_name"},
-			{"data": "person_email"},
+			{"data": "user_email"},
 			{"data": "reservation_date"},
 			{"data": "reservation_hour"},
-			{"data": "category_title"},
-			{"data": "service_title"},
 			{"defaultContent": "<input type='button' class='button modificar' value='Modificar'> <input type='button' class='button delete' value='Borrar'>", "className": "actions"}
 		],
 		"dom": "Blfrtip",

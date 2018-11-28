@@ -17,21 +17,8 @@
 
 				case 'create':
 
-					//Required's
-					$reservation_date = $_POST['reservation_date'];
-					$reservation_hour = $_POST['reservation_hour'];
-					$person_name = $_POST['person_name'];
-					$person_phone = $_POST['person_phone'];
-					$person_email = $_POST['person_email'];
-					$category_id = $_POST['category_id'];
-					$service_id = $_POST['service_id'];
-					$employee_id = $_POST['employee_id'];
-
-					//Optionals
-					$aditional_notes = (isset($_POST['aditional_notes'])) ? $_POST['aditional_notes'] : null;
-
 					$reservations = new Reservations();
-					$reservations->create($reservation_date, $reservation_hour, $person_name, $person_phone, $person_email, $aditional_notes, $category_id, $service_id, $employee_id);
+					$reservations->create($_POST);
 
 					break;
 
@@ -92,15 +79,10 @@
 
 			$sql = "CREATE TABLE IF NOT EXISTS $tname (
 						id INT(255) AUTO_INCREMENT PRIMARY KEY,
-						reservation_date DATE NOT NULL,
+						user_email VARCHAR(50) NOT NULL,
+						reservation_date VARCHAR(50) NOT NULL,
 						reservation_hour VARCHAR(50) NOT NULL,
-						person_name VARCHAR(50) NOT NULL,
-						person_phone VARCHAR(30) NOT NULL,
-						person_email VARCHAR(50) NOT NULL,
-						aditional_notes VARCHAR(250) ,
-						category_id INT NOT NULL,
-						service_id INT NOT NULL,
-						employee_id INT NOT NULL
+						message VARCHAR(2500)
 					) CHARACTER SET utf8;";
 
 			$wpdb->query($sql);
@@ -116,11 +98,7 @@
 			$tservice = $wpdb->prefix . 'ecw_services';
 			$temployee = $wpdb->prefix . 'ecw_employees';
 
-			$sql = "SELECT $tname.*, $tservice.title AS service_title, $tcategory.title AS category_title, $temployee.name AS employee_name, $temployee.lastname AS employee_lastname FROM $tname 
-					INNER JOIN $tcategory ON $tname.category_id = $tcategory.id
-					INNER JOIN $tservice ON $tname.service_id = $tservice.id
-					INNER JOIN $temployee ON $tname.employee_id = $temployee.id
-					";
+			$sql = "SELECT * FROM $tname";
 
 			$query = $wpdb->get_results($sql);
 			
@@ -142,14 +120,29 @@
 
 		}
 
-		public function create($reservation_date, $reservation_hour, $person_name, $person_phone, $person_email, $aditional_notes, $category_id, $service_id, $employee_id) {
+		public function create($args) {
 
 			global $wpdb;
 
 			$tname = $wpdb->prefix . $this->table_name; // Table name
 
-			$sql = "INSERT INTO $tname (reservation_date, reservation_hour, person_name, person_phone, person_email, aditional_notes, category_id, service_id, employee_id) 
-					VALUES ('$reservation_date', '$reservation_hour', '$person_name', '$person_phone', '$person_email', '$aditional_notes', '$category_id', '$service_id', '$employee_id')";
+			$array = [];
+
+			foreach ($_POST as $field => $val) {
+				$key = '[' . $field . ']';
+				$array[$key] = $val;
+			}
+
+			$user_email = strtr(get_option('ecwr_mail_to'), $array);
+			$res_date = strtr(get_option('ecwr_reservation_date'), $array);
+			$res_hour = strtr(get_option('ecwr_reservation_hour'), $array);
+
+			//Generate email template
+			$temp = get_option('ecwr_mail_template');
+			$email_template = strtr($temp, $array);
+
+			$sql = "INSERT INTO $tname (user_email, reservation_date, reservation_hour, message)
+						VALUES ('$user_email', '$res_date', '$res_hour', '$email_template')";
 
 			$query = $wpdb->query($sql);
             
@@ -160,13 +153,12 @@
 				require_once 'class.Emails.php';
 				$email = new Emails();
 
-				if($email->reservation($wpdb->insert_id)) {
+				if($email->reservation($user_email, $email_template)) {
 				    
 					$resp['code'] = 200;
 					$resp['msg'] = 'Resource saved successfully.';
 					
 				} else {
-					$resp['error2'] = $email->reservation($wpdb->insert_id);
 					$resp['error'] = $wpdb->last_error;
 					$resp['code'] = 500;
 					$resp['msg'] = 'Error saving this resource.';

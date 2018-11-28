@@ -31,4 +31,15 @@
 		return $categories->get_all('array');
 	}
 
+	//Fields
+	function all_fields() {
+		require_once('models/class.Fields.php'); // Require and run Fields model
+		$fields = new EcwrFields();
+		return $fields->get_all('array');
+	}
+
+	function fields_sort($a, $b, $sortby = 'field_order') {
+	  return $a->field_order > $b->field_order;
+	}
+
  ?>

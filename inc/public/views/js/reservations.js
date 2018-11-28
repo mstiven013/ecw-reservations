@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	$('.single-list').select2();
+	$('.single-list, .select2-list').select2();
 	$('.multiple-list').select2({
 		placeholder: 'Elija al menos un servicio'
 	});
@@ -17,7 +17,7 @@ const urlReservations = info.ecw_url + "/inc/models/class.Reservations.php";
 //Datepicker init function
 const Datepicker = () => {
 
-	const dp = $('#reservation_date');
+	const dp = $('.date-select');
 	
 	dp.datepicker({
 		language: "es",
@@ -34,7 +34,7 @@ const Datepicker = () => {
 //Timpicker init function
 const Timepicker = () => {
 
-	const cp = $('#reservation_hour');
+	const cp = $('.hour-select');
 
 	cp.clockpicker({
 		align: 'left',
@@ -105,7 +105,7 @@ const formStepperFunction = () => {
 const formFunction = () => {
 
 	//Prevent writte on date & hour inputs
-	$('input#reservation_date, input#reservation_hour').keypress(function(){
+	$('input.hour-select, input.date-select').keypress(function(){
 		return false;
 	});
 
@@ -199,6 +199,10 @@ const getResponse = (resp) => {
 	let word = '';
 	let frm = $('#reservation');
 
+	const successModal = $('.modal-success');
+	const successText = $('#success-text');
+	const successBtn = $('#success-btn');
+
 	//Get resp action
 	switch(resp.action) {
 		case 'create':
@@ -242,15 +246,11 @@ const getResponse = (resp) => {
 
 		case 500:
 
-			successBtn.html('Cerrar');
-			successText.html(`Ha ocurrido un error, por favor intentarlo de nuevo.`);
-
-			break;
-
-		case 409:
-
-			successBtn.html('Cerrar');
-			successText.html('Ya existe un reserva con este nombre.');
+			//Add checked info to modal
+            $('.modal-reservation #check').addClass('checked');
+            $('.modal-reservation #text-modal').fadeOut();
+            $('.modal-reservation #text-modal').html('Ha ocurrido un error, intentalo de nuevo');
+            $('.modal-reservation #text-modal').fadeIn();
 
 			break;
 
