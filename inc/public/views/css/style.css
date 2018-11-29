@@ -8,6 +8,43 @@ select {
 	min-width: 300px !important;
 }
 
+.datepicker table {
+    width: 100%;
+}
+
+/*Timepicker*/
+.bootstrap-timepicker-widget {
+    min-width: 250px !important;
+}
+	.bootstrap-timepicker-widget table td input {
+	    width: 45px !important;
+	    box-shadow: none !important;
+	    border: 1px solid #ced4da;
+	    padding: 10px 0px;
+	}
+
+	.bootstrap-timepicker-widget table td a {
+	    background-color: #e4e4e4;
+	    border-radius: 5px;
+	    padding: 5px 0px !important;
+	}
+
+	.bootstrap-timepicker-widget table td a .glyphicon-chevron-up,
+	.bootstrap-timepicker-widget table td a .glyphicon-chevron-down {
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		display: block;
+		height: 13px;
+		opacity: 0.6;
+	}
+	.bootstrap-timepicker-widget table td a .glyphicon-chevron-up {
+		background-image: url(../img/chevron-up.png);
+	}
+	.bootstrap-timepicker-widget table td a .glyphicon-chevron-down {
+		background-image: url(../img/chevron-down.png);
+	}
+
 /*Select2 styles*/
 form.reservation .select2-container {
 	outline: 0;

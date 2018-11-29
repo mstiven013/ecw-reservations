@@ -11,7 +11,8 @@
 				__('Reservas', ECWR_NS),
 				'administrator',
 				'ecwr_all_reservations',
-				'ecwr_all_reservations'
+				'ecwr_all_reservations',
+				ECWR_DIR . 'inc/private/views/img/menu_icon.png'
 			);
 
 			//Add global settings submenu to reservations menu
@@ -58,9 +59,18 @@
 			register_setting( 'ecwr-mail-template-group', 'ecwr_mail_template' );
 
 			//Register general options
-			register_setting( 'ecwr-general-settings-group', 'ecwr_min_datepicker' );
-			register_setting( 'ecwr-general-settings-group', 'ecwr_max_datepicker' );
 			register_setting( 'ecwr-general-settings-group', 'ecwr_onestep_form' );
+
+			//Calendar
+			register_setting( 'ecwr-calendar-settings-group', 'ecwr_min_datepicker' );
+			register_setting( 'ecwr-calendar-settings-group', 'ecwr_max_datepicker' );
+			register_setting( 'ecwr-calendar-settings-group', 'ecwr_disabled_days' );
+			register_setting( 'ecwr-calendar-settings-group', 'ecwr_disabled_dates' );
+
+			//Time
+			register_setting( 'ecwr-timepicker-settings-group', 'ecwr_min_timepicker' );
+			register_setting( 'ecwr-timepicker-settings-group', 'ecwr_max_timepicker' );
+			register_setting( 'ecwr-timepicker-settings-group', 'ecwr_range_timepicker' );
 
 		}
 	}

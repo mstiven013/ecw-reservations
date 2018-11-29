@@ -33,14 +33,21 @@
 			    wp_enqueue_script('bootstrap-datepicker.es.min.js');
 
 			    //Clockpicker Bootstrap scripts
-			    wp_register_script('bootstrap-clockpicker.min.js', ECWR_DIR . 'inc/libs/bootstrap/js/bootstrap-clockpicker.min.js', '', '', false);
-			    wp_enqueue_script('bootstrap-clockpicker.min.js');
+			    wp_register_script('bootstrap-timepicker.min.js', ECWR_DIR . 'inc/libs/bootstrap/js/bootstrap-timepicker.min.js', '', '', false);
+			    wp_enqueue_script('bootstrap-timepicker.min.js');
 
 			    //Custom scripts
 			    wp_register_script('reservations.js', ECWR_DIR . 'inc/public/views/js/reservations.js',  '', '', false);
 			    wp_enqueue_script('reservations.js');
 			    wp_localize_script('reservations.js', 'info', array(
-			    	'ecw_url' => ECWR_DIR
+			    	'ecw_url' => ECWR_DIR,
+			    	'disabled_days' => get_option('ecwr_disabled_days'),
+			    	'disabled_dates' => get_option('ecwr_disabled_dates'),
+			    	'min_date' => get_option('ecwr_min_datepicker'),
+			    	'max_date' => get_option('ecwr_max_datepicker'),
+			    	'min_time' => get_option('ecwr_min_timepicker'),
+					'max_time' => get_option('ecwr_max_timepicker'),
+					'range_time' => get_option('ecwr_range_timepicker')
 				));
 			}
 		}
@@ -72,12 +79,8 @@
 			    wp_enqueue_style('bootstrap-datepicker.standalone.min.css');
 
 			    //Clockpicker Bootstrap styles
-			    wp_register_style('bootstrap-clockpicker.min.css', ECWR_DIR . 'inc/libs/bootstrap/css/bootstrap-clockpicker.min.css', array(), false, 'all');
-			    wp_enqueue_style('bootstrap-clockpicker.min.css');
-
-			    //Clockpicker Bootstrap styles
-			    wp_register_style('bootstrap-clockpicker.standalone.css', ECWR_DIR . 'inc/libs/bootstrap/css/bootstrap-clockpicker.standalone.css', array(), false, 'all');
-			    wp_enqueue_style('bootstrap-clockpicker.standalone.css');
+			    wp_register_style('bootstrap-timepicker.min.css', ECWR_DIR . 'inc/libs/bootstrap/css/bootstrap-timepicker.min.css', array(), false, 'all');
+			    wp_enqueue_style('bootstrap-timepicker.min.css');
 			    
 			    //Select2 styles
 			    wp_register_style('select2.min.css', ECWR_DIR . 'inc/libs/bootstrap/css/select2.min.css', array(), false, 'all');

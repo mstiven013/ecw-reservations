@@ -5,6 +5,8 @@
       $tabs = array(
          'generals'  => __( 'Generales', ECWR_NS ),
          'form'  => __( 'Formulario', ECWR_NS ),
+         'calendar'   => __( 'Calendario', ECWR_NS ),
+         'timepicker'   => __( 'Reloj', ECWR_NS ),
          'template_email'   => __( 'Plantilla correo electrónico', ECWR_NS ),
          'settings_email'   => __( 'Configuración correo electrónico', ECWR_NS ),
          'help'  => __( 'Ayuda', ECWR_NS )
@@ -39,6 +41,14 @@
 
          case 'form':
             include('settings/form.php');
+         break;
+
+         case 'calendar':
+            include('settings/calendar.php');
+         break;
+
+         case 'timepicker':
+            include('settings/timepicker.php');
          break;
 
          case 'template_email':

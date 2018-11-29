@@ -17,8 +17,34 @@ const urlReservations = info.ecw_url + "/inc/models/class.Reservations.php";
 //Datepicker init function
 const Datepicker = () => {
 
+	console.log(info);
+
 	const dp = $('.date-select');
-	
+
+	//Define min date
+	let minDate = new Date();
+	if(info.min_date != '1') {
+		minDate = info.min_date;
+	}
+
+	//Define max date
+	let maxDate = '2050-12-31';
+	if(info.max_date != '1') {
+		maxDate = info.max_date;
+	}
+
+	//Disabled days
+	let disabledDays = [];
+	if(info.disabled_days !== '') {
+		disabledDays = info.disabled_days;
+	}
+
+	//Disabled dates
+	let disabledDates = [];
+	if(info.disabled_dates !== '') {
+		disabledDates = info.disabled_dates.split(",");
+	}
+
 	dp.datepicker({
 		language: "es",
 		clearBtn: true,
@@ -26,7 +52,10 @@ const Datepicker = () => {
 		format: 'yyyy-mm-dd',
 		changeMonth: true,
         changeYear: true,
-        startDate: new Date()
+        startDate: minDate,
+        endDate: maxDate,
+        daysOfWeekDisabled: disabledDays,
+        datesDisabled: disabledDates
 	});
 
 }
@@ -34,14 +63,49 @@ const Datepicker = () => {
 //Timpicker init function
 const Timepicker = () => {
 
+	//Defining timepicker selector var
 	const cp = $('.hour-select');
 
-	cp.clockpicker({
-		align: 'left',
-		default: 'now',
-		donetext: 'Seleccionar',
-		twelvehour: true
-	});
+	//Defining minutes range step
+	let minutes_step = 30;
+	if(info.range_time !== '') {
+		minutes_step = parseInt(info.range_time);
+	}
+
+	//Defining min hour for select
+	let min_hour = info.min_time.split(':')[0];
+	let min_minute = info.min_time.split(':')[1].split('-')[0];
+	let min_mer = info.min_time.split(':')[1].split('-')[1];
+
+	let minimum = parseInt(min_minute) + parseInt(min_hour) * 60; //Summary for all minimum time
+
+	//Defining max hour for select
+	let max_hour = info.max_time.split(':')[0];
+	let max_minute = info.max_time.split(':')[1].split('-')[0];
+	let max_mer = info.max_time.split(':')[1].split('-')[1];
+
+	let maximum = parseInt(max_minute) + parseInt(max_hour) * 60; //Summary for all maximum time
+
+	cp.timepicker({
+		showMeridian: true,
+		defaultTime: 'current',
+		minuteStep: minutes_step,
+		maxHours: 24
+	}).on('changeTime.timepicker', function(e) {
+	    var h = e.time.hours;
+	    var m = e.time.minutes;
+	    var mer = e.time.meridian;
+
+	    //convert hours into minutes
+	    m += h * 60;
+
+	    //Min time
+	    if((mer == min_mer && mer != max_mer) && (m < minimum && m !== 720)) {
+	        cp.timepicker('setTime', info.min_time);
+	    } else if((mer != min_mer && mer == max_mer) && (m > maximum && m !== 720)) {
+	        cp.timepicker('setTime', info.max_time);
+	    }
+	  });
 
 }
 

@@ -259,3 +259,24 @@ ul.fields-list {
 .ecwr_form_content.email-settings .form-table {
 	margin: 20px 0px;
 }
+
+/*Modal reservations*/
+.modal-reservations .modal-body .section {
+	border-bottom: 1px solid #ccc;
+	padding: 15px 0px;
+}
+	.modal-reservations .modal-body .section:first-child {
+		padding-top: 0px;
+	}
+	.modal-reservations .modal-body .section:last-child {
+		border-bottom: none;
+		padding-bottom: 0px;
+	}
+
+	.modal-reservations .modal-body .section p {
+		font-size: 18px;
+		margin: 7px 0px;
+	}
+	.modal-reservations .modal-body #reservation-message {
+	    font-size: 16px;
+	}

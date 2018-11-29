@@ -64,17 +64,10 @@ const initDataTable = () => {
 			{"data": "user_email"},
 			{"data": "reservation_date"},
 			{"data": "reservation_hour"},
-			{"defaultContent": "<input type='button' class='button modificar' value='Modificar'> <input type='button' class='button delete' value='Borrar'>", "className": "actions"}
+			{"defaultContent": "<input type='button' class='button see' value='Ver completa'>", "className": "actions"}
 		],
 		"dom": "Blfrtip",
 		"buttons": [
-			{
-				"text": 'Crear una reserva',
-				"className": "button",
-				"action": function ( e, dt, node, config ) {
-					modalAddReservation();
-				}
-			},
 			{
 				"extend": 'excel',
 				"text": 'Exportar a Excel',
@@ -93,7 +86,7 @@ const initDataTable = () => {
 	});
 
 	modalReservationUpdate('.datatable tbody', table);
-	deleteReservation('.datatable tbody', table);
+	seeReservation('.datatable tbody', table);
 }
 
 //Datepicker init function
@@ -176,23 +169,27 @@ const modalAddReservation = () => {
 
 }
 
-const deleteReservation = (tbody, table) => {
+const seeReservation = (tbody, table) => {
 
-	$(tbody).on('click', 'input.delete', function() {
+	$(tbody).on('click', 'input.see', function() {
 		let data = table.row($(this).parents("tr")).data(); // Get row data
+		console.log(data)
 
-		$.ajax({
-			method: "POST",
-			url: urlReservations,
-			data: {
-				"src": "reservations",
-				"action": "delete",
-				"id": data.id
-			},
-		}).done(function(deleted){
-			let json_info = JSON.parse( deleted );
-			$('.datatable').DataTable().ajax.reload();
-		});
+		//Add id to modal
+		let res_id = $('#modal-title #id').html(data.id);
+
+		//Add date to modal
+		let res_date = $('#reservation-date').html(data.reservation_date);
+
+		//Add date to modal
+		let res_hour = $('#reservation-hour').html(data.reservation_hour);
+
+		//Add message content
+		let parseated = $.parseHTML(data.message);
+		document.getElementById('reservation-message').innerHTML = parseated[0].data;
+
+		modal.modal('show');
+
 	});
 
 }
