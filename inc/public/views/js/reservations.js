@@ -73,18 +73,22 @@ const Timepicker = () => {
 	}
 
 	//Defining min hour for select
-	let min_hour = info.min_time.split(':')[0];
-	let min_minute = info.min_time.split(':')[1].split('-')[0];
-	let min_mer = info.min_time.split(':')[1].split('-')[1];
-
-	let minimum = parseInt(min_minute) + parseInt(min_hour) * 60; //Summary for all minimum time
+	if(info.min_time !== '') {
+        var min_hour = info.min_time.split(':')[0];
+        var min_minute = info.min_time.split(':')[1].split('-')[0];
+        var min_mer = info.min_time.split(':')[1].split('-')[1];
+        
+        var minimum = parseInt(min_minute) + parseInt(min_hour) * 60; //Summary for all minimum time   
+	}
 
 	//Defining max hour for select
-	let max_hour = info.max_time.split(':')[0];
-	let max_minute = info.max_time.split(':')[1].split('-')[0];
-	let max_mer = info.max_time.split(':')[1].split('-')[1];
-
-	let maximum = parseInt(max_minute) + parseInt(max_hour) * 60; //Summary for all maximum time
+	if(info.max_time !== '') {
+	    var max_hour = info.max_time.split(':')[0];
+    	var max_minute = info.max_time.split(':')[1].split('-')[0];
+    	var max_mer = info.max_time.split(':')[1].split('-')[1];
+    
+    	var maximum = parseInt(max_minute) + parseInt(max_hour) * 60; //Summary for all maximum time
+	}
 
 	cp.timepicker({
 		showMeridian: true,
