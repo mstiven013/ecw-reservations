@@ -1,6 +1,16 @@
 <?php 
 	
-	include(dirname(__FILE__, 5) . '/wp-load.php'); //Require wp load
+	if(phpversion() >= 7) {
+	    include(dirname(__FILE__, 5) . '/wp-load.php'); //Require wp load
+	} else {
+	    include(realpath(__DIR__, '/../../../..') . '/wp-load.php');
+	}
+	
+	$holi = 'HOLA';
+	
+	function holi() {
+	    return 'hola';
+	}
 
 	//Reservations
 	function all_reservations() {

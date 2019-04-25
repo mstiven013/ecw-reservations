@@ -33,7 +33,11 @@
 
 		public function reservation($user_email, $email_template) {
 
-			include(dirname(__FILE__, 6) . '/wp-load.php'); //Require wp load
+			if(phpversion() >= 7) {
+    		    include(dirname(__FILE__, 6) . '/wp-load.php'); //Require wp load
+            } else {
+                include(realpath(__DIR__ . '/../../../../..') . '/wp-load.php'); //Require wp load
+            }
 
 			global $wpdb;
 			
@@ -74,10 +78,16 @@
 			} else {
 				$smtpHost = 'localhost';
 			}
-
-			include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/PHPMailer.php');
-			include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/SMTP.php');
-        	include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/Exception.php');
+			
+			if(phpversion() >= 7) {
+    		    include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/PHPMailer.php');
+    			include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/SMTP.php');
+            	include(dirname(__FILE__, 2) . '/libs/PHPMailer/src/Exception.php');
+            } else {
+                include(realpath(__DIR__ . '/..') . '/libs/PHPMailer/src/PHPMailer.php');
+    			include(realpath(__DIR__ . '/..') . '/libs/PHPMailer/src/SMTP.php');
+            	include(realpath(__DIR__ . '/..') . '/libs/PHPMailer/src/Exception.php');
+            }
             
             $mail = new PHPMailer\PHPMailer\PHPMailer();  // Passing `true` enables exceptions
 

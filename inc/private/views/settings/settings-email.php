@@ -1,10 +1,14 @@
 <?php
 
-	include(dirname(__FILE__, 4) . '/functions.php');
+	if(isset($_POST['action']) && isset($_POST['src'])) {
+		include(dirname(__FILE__, 4) . '/functions.php');
+	} else {
+		include(realpath(__DIR__, '/../../..') . '/functions.php');
+	}
 
 ?>
 
-<form class="ecwr_form_content email-settings" method="post" action="options.php"> 
+<form class="ecwr_form_content email-settings" method="post" action="options.php">
 	<?php settings_fields( 'ecwr-mail-settings-group' ); ?>
 	<?php do_settings_sections( 'ecwr-mail-settings-group' ); ?>
 

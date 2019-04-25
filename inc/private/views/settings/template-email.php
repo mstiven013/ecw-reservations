@@ -1,15 +1,19 @@
 <?php
 
-	include(dirname(__FILE__, 4) . '/functions.php');
-
+	if(phpversion() >= 7) {
+		include(dirname(__FILE__, 4) . '/functions.php');
+	} else {
+		include(realpath(__DIR__ . '/../../..') . '/functions.php');
+	}
+	
 	$fields = all_fields();
 
 ?>
 
-<form class="ecwr_form_content email-settings" method="post" action="options.php"> 
+<form class="ecwr_form_content email-settings" method="post" action="options.php">
 	<?php settings_fields( 'ecwr-mail-template-group' ); ?>
 	<?php do_settings_sections( 'ecwr-mail-template-group' ); ?>
-	
+
 	<table class="form-table">
 
 		<h5><?php _e('Plantilla del correo electrónico enviado:', ECWR_NS); ?></h5>

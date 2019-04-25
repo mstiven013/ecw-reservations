@@ -2,7 +2,11 @@
 
 	if(isset($_POST['action']) && isset($_POST['src'])) {
 
-		include(dirname(__FILE__, 6) . '/wp-load.php'); //Require wp load
+		if(phpversion() >= 7) {
+		    include(dirname(__FILE__, 6) . '/wp-load.php'); //Require wp load
+        } else {
+            include(realpath(__DIR__ . '/../../../../..') . '/wp-load.php'); //Require wp load
+        }
 
 		if($_POST['src'] == 'services'){
 			switch ($_POST['action']) {
