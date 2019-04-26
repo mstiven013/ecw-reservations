@@ -1,6 +1,10 @@
 <?php
 
-	include(dirname(__FILE__, 3) . '/functions.php');
+	if(phpversion() >= 7) {
+        include(dirname(__FILE__, 3) . '/functions.php');
+    } else {
+        include(realpath(__DIR__ . '/../..') . '/functions.php');
+    }
 
 	$fields = all_fields();
 	uasort($fields, 'fields_sort')
@@ -129,7 +133,7 @@
 	</div>
 	
 	<div class="row buttons-bar">
-		<div class="col text-left">
+		<div class="col">
 			<input type="hidden" id="src" name="src" value="reservations">
 	  		<input type="hidden" id="action" name="action" value="create">
 			<input type="submit" id="ecw_right-btn" class="btn reservar" value="Reservar">

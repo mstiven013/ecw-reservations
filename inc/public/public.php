@@ -9,9 +9,17 @@
 
 		//Function to return reservation form in "reservation_form" shortcode
 		public function reservation_form() {
+		    
 			ob_start();
-			include(dirname(__FILE__) . '/views/form.php');
+			
+            if(phpversion() >= 7) {
+                include(dirname(__FILE__) . '/views/form.php');
+            } else {
+                include(realpath(__DIR__) . '/views/form.php');
+            }
+            
 			$content = ob_get_clean();
+			
 			return $content;
 		}
 
